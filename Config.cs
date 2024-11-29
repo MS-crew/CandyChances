@@ -1,4 +1,6 @@
 ﻿using Exiled.API.Interfaces;
+using InventorySystem.Items.Usables.Scp330;
+using System.Collections.Generic;
 
 namespace CandyChances
 {
@@ -6,12 +8,15 @@ namespace CandyChances
     {
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
-        public float BlueCandyChance { get; set; } = 15f;
-        public float GreenCandyChange { get; set; } = 15f;
-        public float PinkCandyChance { get; set; } = 10f;
-        public float PurpleCandyChance { get; set; } = 15f;
-        public float RainbowCandyChance { get; set; } = 15f;
-        public float RedCandyChance { get; set; } = 15f;
-        public float YellowCandyChance { get; set; } = 15f;
+        public Dictionary<CandyKindID, float> CandyChances { get; set; } = new()
+        {
+            {CandyKindID.Blue,15f},
+            {CandyKindID.Green,15f},
+            {CandyKindID.Pink,10f},
+            {CandyKindID.Purple,15f},
+            {CandyKindID.Rainbow,15f},
+            {CandyKindID.Red,15f},
+            {CandyKindID.Yellow,15f},
+        };
     }
 }
