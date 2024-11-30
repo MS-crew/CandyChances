@@ -5,8 +5,8 @@
 <img src="https://img.shields.io/badge/Licence-GNU_3.0-blue?style=for-the-badge&logo=gitbook" alt="General Public License v3.0"></a> 
 <a href="https://github.com/ExMod-Team/EXILED"><img src="https://img.shields.io/badge/Exiled-9.0.0Alpha2-red?style=for-the-badge&logo=gitbook" alt="GitHub Exiled"></a> 
 </div>
-
-You can change the chances of all the candies coming out
+<div align="center">
+You can change the chances of all the candies coming out</div>
 ## CandyChances
 
 - **Customizable Chances:** Adjusting the luck of all candies: You can change the chances of all candies coming out.
