@@ -32,11 +32,12 @@ Default Config
 ```yml
 is_enabled: true
 debug: false
-blue_candy_chance: 15
-green_candy_change: 15
-pink_candy_chance: 10
-purple_candy_chance: 15
-rainbow_candy_chance: 15
-red_candy_chance: 15
-yellow_candy_chance: 15
+candy_chances:
+  Blue: 15
+  Green: 15
+  Pink: 10
+  Purple: 15
+  Rainbow: 15
+  Red: 15
+  Yellow: 15
 ```
