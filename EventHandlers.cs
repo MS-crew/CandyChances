@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using Exiled.CustomRoles.API;
-using Interactables.Interobjects;
 using Exiled.Events.EventArgs.Scp330;
 using Exiled.CustomRoles.API.Features;
-using Exiled.API.Features;
 
 namespace CandyChances
 {
