@@ -1,4 +1,3 @@
-# CandyChances
 <h1 align="center">CandyChances</h1> 
 <div align="center">
 <a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/github/downloads/MS-crew/CandyChances/total?style=for-the-badge&logo=githubactions&label=Downloads" alt="GitHub Release Download"></a> <a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/badge/Build-1.0.0-brightgreen?style=for-the-badge&logo=gitbook" alt="GitHub Releases"></a> 
@@ -7,7 +6,11 @@
 <a href="https://github.com/ExMod-Team/EXILED"><img src="https://img.shields.io/badge/Exiled-9.0.0Alpha2-red?style=for-the-badge&logo=gitbook" alt="GitHub Exiled"></a> 
 </div>
 
-You can change the chances of all the sugars coming out
+
+<div align="center">
+You can change the chances of all the candies coming out</div>
+
+
 ## CandyChances
 
 - **Customizable Chances:** Adjusting the luck of all candies: You can change the chances of all candies coming out.
@@ -32,11 +35,12 @@ Default Config
 ```yml
 is_enabled: true
 debug: false
-blue_candy_chance: 15
-green_candy_change: 15
-pink_candy_chance: 10
-purple_candy_chance: 15
-rainbow_candy_chance: 15
-red_candy_chance: 15
-yellow_candy_chance: 15
+candy_chances:
+  Blue: 15
+  Green: 15
+  Pink: 10
+  Purple: 15
+  Rainbow: 15
+  Red: 15
+  Yellow: 15
 ```
