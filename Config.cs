@@ -10,6 +10,7 @@ namespace CandyChances
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = false;
         public bool ShouldPlayTakeSound { get; set; } = true;
+        public bool ShowRemainingUse { get; set; } = false;
         public bool HandsSeveredHint { get; set; } = true;
         public float HandsSeveredHintTime { get; set; } = 3;
         public float CandyHintTime { get; set; } = 3;
@@ -26,7 +27,7 @@ namespace CandyChances
         public Dictionary<RoleTypeId, int> ModifiedUseLimits { get; set; } = new()
         {
             {RoleTypeId.ClassD,     3},
-            {RoleTypeId.NtfCaptain, 5},
+            {RoleTypeId.NtfCaptain, 3},
         };
         public Dictionary<string, int> ModifiedUseLimitsforCustomRoles { get; set; } = new()
         {
