@@ -37,6 +37,7 @@ is_enabled: true
 debug: false
 should_play_take_sound: true
 hands_severed_hint: true
+show_remaining_use: false
 hands_severed_hint_time: 3
 candy_hint_time: 3
 candy_chances:
