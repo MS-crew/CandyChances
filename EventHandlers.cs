@@ -32,11 +32,11 @@ namespace CandyChances
             }
             else if (Plugin.Instance.Translation.GetCandyHints.TryGetValue(ev.Candy, out string[] candyHints))
             {
-                string hint= candyHints.RandomItem();
+                string hint = candyHints.RandomItem();
 
                 if (Plugin.Instance.Config.ShowRemainingUse)
                 {
-                    int remaining = UsageLimit - ev.UsageCount;
+                    int remaining = UsageLimit - ev.UsageCount - 1;
                     hint += Plugin.Instance.Translation.RemainingUse.Replace("{0}", remaining.ToString());
                 } 
 
