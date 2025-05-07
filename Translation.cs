@@ -7,7 +7,7 @@ namespace CandyChances
 {
     public class Translation : ITranslation
     {
-        public string RemainingUse { get; set; } = "\n<color=green>Remaining uses: {0}</color>";
+        public string RemainingUse { get; set; } = "<color=green>Remaining uses: {0}</color>";
 
         [Description("Random hint messages shown when player's hands get severed")]
         public string[] HandsSeveredHints { get; set; } =
