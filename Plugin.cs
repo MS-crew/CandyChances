@@ -40,7 +40,7 @@ namespace CandyChances
         {
             Scp330.InteractingScp330 -= eventHandlers.OnInteractingScp330;
 
-            harmony.UnpatchAll(harmonyID: "CandyChances");
+            harmony.UnpatchAll();
 
             eventHandlers = null;
             Instance = null;
