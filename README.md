@@ -1,45 +1,44 @@
-<h1 align="center">CandyChances</h1> 
+<h1 align="center">CandyChances</h1>
 <div align="center">
-<a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/github/downloads/MS-crew/CandyChances/total?style=for-the-badge&logo=githubactions&label=Downloads" alt="GitHub Release Download"></a> <a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/badge/Build-2.1.0-brightgreen?style=for-the-badge&logo=gitbook" alt="GitHub Releases"></a> 
-<a href="https://github.com/MS-crew/CandyChances/blob/master/LICENSE">
-<img src="https://img.shields.io/badge/Licence-GPL_3.0-blue?style=for-the-badge&logo=gitbook" alt="General Public License v3.0"></a> 
-<a href="https://github.com/ExMod-Team/EXILED"><img src="https://img.shields.io/badge/Exiled-9.0.0-greeen?style=for-the-badge&logo=gitbook" alt="GitHub Exiled"></a> 
+<a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/github/downloads/MS-crew/CandyChances/total?style=for-the-badge&logo=github" alt="GitHub Release Download"></a>
+<a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/badge/Build-2.2.0-brightgreen?style=for-the-badge&logo=gitbook" alt="Latest Release"></a>
+<a href="https://github.com/MS-crew/CandyChances/blob/master/LICENSE"><img src="https://img.shields.io/badge/Licence-GPL_3.0-blue?style=for-the-badge&logo=gitbook" alt="General Public License v3.0"></a>
+<a href="https://github.com/ExMod-Team/EXILED"><img src="https://img.shields.io/badge/Exiled-9.0.0-green?style=for-the-badge&logo=gitbook" alt="Exiled Dependency"></a>
 </div>
 
-
 <div align="center">
-You can change the chances of all the candies coming out</div>
+Fine tune every aspect of SCP-330's candy bowl for your server.
+</div>
 
+## Features
 
-## CandyChances
+- **Weighted Candy Chances:** Set individual spawn weights for every candy type in SCP-330.
+- **Cooldown & Use Limit Overrides:** Configure a custom global take cooldown and maximum uses per life.
+- **Role-Based Limits:** Provide unique use limits for vanilla roles and Exiled custom roles.
+- **Dynamic Hint System:** Toggle hints for candy pickups, remaining uses, and hand-sever events with configurable text.
+- **Sound Control:** Decide whether players hear the classic candy pickup sound.
 
-- **Customizable Chances:** You can adjust the drop chances for each type of candy individually, allowing you to control how likely each one is to appear.
-- **Customizable Hints:** You can customize the hint messages shown when a candy is taken or when a player's hands are severed.
-- **Customizable Usage Counts:** You can set how many times a player can take candy before their hands are severed, including different limits for custom roles.
+## Installation
 
-1. Download the release file from the GitHub page [here](https://github.com/MS-crew/CandyChances/releases).
-2. Extract the contents into your `\AppData\Roaming\EXILED\Plugins` directory.
-3. Configure the plugin according to your server’s needs using the provided settings.
-4. Restart your server to apply the changes.
+1. Download the latest release from the [GitHub releases page](https://github.com/MS-crew/CandyChances/releases).
+2. Place the extracted files into your `\AppData\Roaming\EXILED\Plugins` directory.
+3. Adjust the configuration (see below) to match your server's needs.
+4. Restart or reload your server to apply the changes.
 
-## Feedback and Issues
+## Configuration
 
-This is the initial release of the plugin. We welcome any feedback, bug reports, or suggestions for improvements.
+CandyChances ships with the following default configuration:
 
-- **Report Issues:** [Issues Page](https://github.com/MS-crew/CandyChances/issues)
-- **Contact:** [discerrahidenetim@gmail.com](mailto:discerrahidenetim@gmail.com)
-
-Thank you for using our plugin and helping us improve it!
-
-Default Config
 ```yml
 is_enabled: true
 debug: false
-should_play_take_sound: true
-hands_severed_hint: true
-show_remaining_use: false
-hands_severed_hint_time: 3
-candy_hint_time: 3
+
+override_candy_take_cooldown: false
+modified_candy_take_cooldown: 2
+
+override_global_use_limit: false
+modified_global_use_limit: 3
+
 candy_chances:
   Blue: 15
   Green: 15
@@ -48,10 +47,29 @@ candy_chances:
   Rainbow: 15
   Red: 15
   Yellow: 15
+
+hint_time: 3
+show_candy_hint: true
+show_remaining_use_hint: true
+show_hands_severed_hint: true
+should_play_take_sound: true
+
+override_use_limitsfor_roles: false
 modified_use_limits:
-  ClassD: 3
-  NtfCaptain: 5
+  Tutorial: 99
+
+override_use_limitsfor_custom_roles: false
 modified_use_limitsfor_custom_roles:
-  Candy Monster: 99
-  Chaos Bomber: 10
+  Example Role Name: 5
 ```
+
+### Translations
+
+All hint strings can be customised via the translation file, allowing you to provide localized or themed messages for candy pickups and hand-sever events.
+
+## Feedback and Support
+
+- **Report Issues:** Use the [GitHub Issues page](https://github.com/MS-crew/CandyChances/issues).
+- **Contact:** [discerrahidenetim@gmail.com](mailto:discerrahidenetim@gmail.com)
+
+Thank you for using CandyChances and helping us improve it!
