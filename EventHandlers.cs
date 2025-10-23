@@ -1,64 +1,80 @@
-﻿using System.Linq;
-using Exiled.CustomRoles.API;
-using Interactables.Interobjects;
-using Exiled.Events.EventArgs.Scp330;
+﻿using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
+using Exiled.Events.EventArgs.Scp330;
+using Interactables.Interobjects;
+using System.Collections.ObjectModel;
 
 namespace CandyChances
 {
     public class EventHandlers
     {
+        public void OnRoundStarted()
+        {
+            Config config = Plugin.Instance.Config;
+
+            if (config.OverrideGlobalUseLimit)
+                Scp330Interobject.MaxAmountPerLife = config.ModifiedGlobalUseLimit;
+
+            if (config.OverrideCandyTakeCooldown)
+                Scp330Interobject.TakeCooldown = config.ModifiedCandyTakeCooldown;
+        }
+
         public void OnInteractingScp330(InteractingScp330EventArgs ev)
         {
             if (!ev.IsAllowed)
                 return;
 
-            int UsageLimit;
-            CustomRole customRole = ev.Player.GetCustomRoles()?.FirstOrDefault();
-            
-            if (customRole != null && Plugin.Instance.Config.ModifiedUseLimitsforCustomRoles.TryGetValue(customRole.Name, out UsageLimit))
-            {
-                ev.ShouldSever = ev.UsageCount >= UsageLimit;
-            }
-            else if (Plugin.Instance.Config.ModifiedUseLimits.TryGetValue(ev.Player.Role.Type, out UsageLimit))
-            {
-                ev.ShouldSever = ev.UsageCount >= UsageLimit;
-            }
-            else
-            {
-                UsageLimit = Scp330Interobject.MaxAmountPerLife;
-            }
-                
-            ev.ShouldPlaySound = Plugin.Instance.Config.ShouldPlayTakeSound;
+            Config config = Plugin.Instance.Config;
+            Translation translation = Plugin.Instance.Translation;
 
+            ev.ShouldPlaySound = config.ShouldPlayTakeSound;
+
+            #region CustomUseLimits
+            int usageLimit = Scp330Interobject.MaxAmountPerLife;
+
+            if (config.OverrideUseLimitsforCustomRoles)
+            {
+                ReadOnlyCollection<CustomRole> customRoles = ev.Player.GetCustomRoles();
+                if (customRoles != null)
+                {
+                    foreach (CustomRole role in customRoles)
+                    {
+                        if (config.ModifiedUseLimitsforCustomRoles.TryGetValue(role.Name, out usageLimit))
+                            break;
+                    }
+                }
+            }
+
+            if (usageLimit == Scp330Interobject.MaxAmountPerLife && config.OverrideUseLimitsforRoles)
+                config.ModifiedUseLimits.TryGetValue(ev.Player.Role.Type, out usageLimit);
+
+            ev.ShouldSever = ev.UsageCount >= usageLimit;
+            #endregion
+
+            #region Hints logics
             if (ev.ShouldSever)
             {
-                if (!Plugin.Instance.Config.HandsSeveredHint)
-                    return;
+                if (config.ShowHandsSeveredHint)
+                    ev.Player.ShowHint(translation.HandsSeveredHints.RandomItem(), config.HintTime);
 
-                ev.Player.ShowHint(Plugin.Instance.Translation.HandsSeveredHints.RandomItem(), Plugin.Instance.Config.HandsSeveredHintTime);
                 return;
             }
 
-            string hint = string.Empty;
 
-            if (Plugin.Instance.Translation.GetCandyHints.TryGetValue(ev.Candy, out string[] candyHints))
-            {
+            string hint = null;
+            if (config.ShowCandyHint && translation.CandyHints.TryGetValue(ev.Candy, out string[] candyHints))
                 hint = candyHints.RandomItem();
-            }
 
-            if (Plugin.Instance.Config.ShowRemainingUse)
+            if (config.ShowRemainingUseHint)
             {
-                int remaining = UsageLimit - ev.UsageCount - 1;
-                string remainingHint = Plugin.Instance.Translation.RemainingUse.Replace("{0}", remaining.ToString());
-
-                if (!string.IsNullOrEmpty(hint))
-                    hint += "\n";
-
-                hint += remainingHint;
+                int remaining = usageLimit - ev.UsageCount - 1;
+                string remainingHint = translation.RemainingUse.Replace("{0}", remaining.ToString());
+                hint = hint == null ? remainingHint : string.Concat(hint, "\n", remainingHint);
             }
 
-            ev.Player.ShowHint(hint, Plugin.Instance.Config.CandyHintTime);
+            if (hint != null)
+                ev.Player.ShowHint(hint, config.HintTime);
+            #endregion
         }
     }
 }

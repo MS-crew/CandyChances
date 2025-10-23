@@ -76,7 +76,7 @@ namespace CandyChances
     }
 
     [HarmonyPatch(typeof(CandyYellow), nameof(CandyYellow.SpawnChanceWeight), MethodType.Getter)]
-    public static class CandyYellowPumper
+    public static class CandyYellowPatch
     {
         public static void Postfix(ref float __result)
         {

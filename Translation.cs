@@ -7,6 +7,7 @@ namespace CandyChances
 {
     public class Translation : ITranslation
     {
+        [Description("Message showing remaining uses of SCP-330. {0} is remaining count")]
         public string RemainingUse { get; set; } = "<color=green>Remaining uses: {0}</color>";
 
         [Description("Random hint messages shown when player's hands get severed")]
@@ -28,11 +29,12 @@ namespace CandyChances
             "<color=red>Your insurance doesn't cover this</color>"
         };
 
-        [Description("Random hints shown when taking candy from SCP-330")]
-        public Dictionary<CandyKindID, string[]> GetCandyHints { get; set; } = new()
+        [Description("Random hints shown when taking candy from SCP-330.")]
+        public Dictionary<CandyKindID, string[]> CandyHints { get; set; } = new()
         {
             [CandyKindID.Red] =
             [
+                "<color=red>You got Red Candy</color>",
                 "<color=red>Your wounds magically vanish! (Who needs doctors?)</color>",
                 "<color=red>Tastes like liquid bandages!</color>",
                 "<color=red>+10 HP! Your mom would be proud</color>",
@@ -42,6 +44,7 @@ namespace CandyChances
 
             [CandyKindID.Yellow] =
             [
+                "<color=yellow>You got Yellow Candy</color>",
                 "<color=yellow>Your legs now powered by NASCAR!</color>",
                 "<color=yellow>Zoomies activated! *vrrrrooom*</color>",
                 "<color=yellow>Stamina? You've got INFINITE!</color>",
@@ -51,6 +54,7 @@ namespace CandyChances
 
             [CandyKindID.Green] =
             [
+                "<color=green>You got Green Candy</color>",
                 "<color=green>You're now 10% more unkillable!</color>",
                 "<color=green>Congrats! You've achieved Basic Bitch Armor™</color>",
                 "<color=green>Your stamina bar called - it's horny</color>",
@@ -60,6 +64,7 @@ namespace CandyChances
 
             [CandyKindID.Blue] =
             [
+                "<color=blue>You got Blue Candy</color>",
                 "<color=blue>You've become the Nokia 3310 of humans</color>",
                 "<color=blue>Plot armor activated!</color>",
                 "<color=blue>Warning: You might start bullet-dodging</color>",
@@ -68,8 +73,8 @@ namespace CandyChances
             ],
 
             [CandyKindID.Pink] =
-    
             [
+                "<color=#FF69B4>You got Pink Candy</color>",
                 "<color=#FF69B4>3... 2... 1... YOU go boom!</color>",
                 "<color=#FF69B4>Making an explosive entrance!</color>",
                 "<color=#FF69B4>Pro tip: Hug someone quickly!</color>",
@@ -79,6 +84,7 @@ namespace CandyChances
 
             [CandyKindID.Rainbow] =
             [
+                "<color=#9400D3>You got Rainbow Candy</color>",
                 "<color=red>L</color><color=orange>I</color><color=yellow>F</color><color=green>E</color> <color=blue>H</color><color=purple>A</color><color=#FF69B4>X</color>",
                 "<color=white>You feel... adequately OP!</color>",
                 "<color=#FF0000>M</color><color=#00FF00>O</color><color=#0000FF>D</color><color=#FF00FF>E</color><color=#FFFF00>:</color> <color=white>Buffed</color>",
@@ -88,6 +94,7 @@ namespace CandyChances
 
             [CandyKindID.Purple] =
             [
+                "<color=#800080>You got Purple Candy</color>",
                 "<color=#800080>Damage sponge mode: ACTIVATED</color>",
                 "<color=#800080>You're basically Wolverine's cousin now</color>",
                 "<color=#800080>Warning: May cause tank envy</color>",
