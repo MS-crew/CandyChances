@@ -54,7 +54,6 @@
     <Compile Include="Patchs\CandyChancePatches.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RandomCandyPicker.cs" />
     <Compile Include="Translation.cs" />
   </ItemGroup>
   <ItemGroup>
