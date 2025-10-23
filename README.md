@@ -15,7 +15,7 @@ Fine tune every aspect of SCP-330's candy bowl for your server.
 - **Weighted Candy Chances:** Set individual spawn weights for every candy type in SCP-330.
 - **Cooldown & Use Limit Overrides:** Configure a custom global take cooldown and maximum uses per life.
 - **Role-Based Limits:** Provide unique use limits for vanilla roles and Exiled custom roles.
-- **Dynamic Hint System:** Toggle hints for candy pickups, remaining uses, and hand-sever events with configurable text.
+- **Dynamic Hint System:** Toggle hints for taked candys from bowl, remaining uses, and hand-sever events with configurable text.
 - **Sound Control:** Decide whether players hear the classic candy pickup sound.
 
 ## Installation
