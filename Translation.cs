@@ -106,6 +106,16 @@ namespace CandyChances
         [Description("Random hints shown when taking HALLOWEEN candies from SCP-330.")]
         public Dictionary<CandyKindID, string[]> HallowenCandyHints { get; set; } = new()
         {
+            [CandyKindID.Pink] =
+            [
+                "<color=#FF69B4>You got Pink Candy</color>",
+                "<color=#FF69B4>3... 2... 1... YOU go boom!</color>",
+                "<color=#FF69B4>Making an explosive entrance!</color>",
+                "<color=#FF69B4>Pro tip: Hug someone quickly!</color>",
+                "<color=#FF69B4>You are become death, destroyer of social circles</color>",
+                "<color=#FF69B4>Warning: Not a team-building exercise</color>"
+            ],
+
             [CandyKindID.Black] =
             [
                 "<color=black>You got Black Candy</color>",
@@ -114,6 +124,15 @@ namespace CandyChances
                 "<color=#111>Your vision fades. Your senses twist.</color>",
                 "<color=#000>You feel… nothing.</color>",
                 "<color=gray>You hear whispers from beyond.</color>"
+            ],
+
+            [CandyKindID.Blue] =
+            [
+                "<color=#007BFF>You got Blue Candy</color>",
+                "<color=#66B2FF>Your body becomes calm and untouchable.</color>",
+                "<color=#87CEEB>You feel an icy shield forming around you.</color>",
+                "<color=#00BFFF>Everything slows… like time itself is freezing.</color>",
+                "<color=#1E90FF>You radiate cold serenity.</color>"
             ],
 
             [CandyKindID.Brown] =
@@ -143,24 +162,68 @@ namespace CandyChances
                 "<color=#555>Impact resistance increased. Emotions: none.</color>"
             ],
 
+            [CandyKindID.Green] =
+            [
+                "<color=#00FF00>You got Green Candy</color>",
+                "<color=#7FFF00>Your blood turns into pure adrenaline!</color>",
+                "<color=#32CD32>You feel sugar rush beyond mortal limits!</color>",
+                "<color=#ADFF2F>Stamina overflowing — your heart can't keep up!</color>",
+                "<color=#00FF7F>You're vibrating at unsafe speed levels!</color>"
+            ],
+
             [CandyKindID.Orange] =
             [
-                "<color=orange>You got Orange Candy</color>",
+                "<color=#FFA500>You got Orange Candy</color>",
                 "<color=orange>You feel warm and slightly explosive.</color>",
-                "<color=#FFA500>Your body emits sparks of flame!</color>",
-                "<color=#FF8C00>You're turning into a walking candle.</color>",
+                "<color=#FF8C00>Your body emits sparks of flame!</color>",
+                "<color=#FF4500>You're turning into a walking candle.</color>",
                 "<color=#FFA500>Warning: Highly flammable.</color>"
+            ],
+
+            [CandyKindID.Purple] =
+            [
+                "<color=#800080>You got Purple Candy</color>",
+                "<color=#DA70D6>Your body hardens with immense force!</color>",
+                "<color=#9932CC>You feel unstoppable — a tank in human form.</color>",
+                "<color=#8A2BE2>Your metabolism slows to near stillness.</color>",
+                "<color=#BA55D3>Your health bar just got another layer!</color>"
+            ],
+
+            [CandyKindID.Rainbow] =
+            [
+                "<color=#9400D3>You got Rainbow Candy</color>",
+                "<color=red>L</color><color=orange>I</color><color=yellow>F</color><color=green>E</color> <color=blue>H</color><color=purple>A</color><color=#FF69B4>X</color>",
+                "<color=#FF69B4>You conjure a dazzling prismatic storm!</color>",
+                "<color=#FFFFFF>Your surroundings explode in color and chaos!</color>",
+                "<color=#7B68EE>You taste every flavor at once. Overload!</color>"
+            ],
+
+            [CandyKindID.Red] =
+            [
+                "<color=red>You got Red Candy</color>",
+                "<color=#FF6347>You spit fire — literally!</color>",
+                "<color=#DC143C>Your mouth erupts like a flamethrower!</color>",
+                "<color=#FF0000>Everything burns... deliciously.</color>",
+                "<color=#B22222>Who needs a lighter when you can breathe flames?</color>"
             ],
 
             [CandyKindID.White] =
             [
                 "<color=white>You got White Candy</color>",
-                "<color=#DDD>You become ghostly transparent!</color>",
-                "<color=#EEE>You pass through doors like a spirit.</color>",
-                "<color=#FFF>You feel detached from the mortal plane.</color>",
-                "<color=#EEE>Your body fades in and out of reality.</color>"
+                "<color=#EEE>You become ghostly transparent!</color>",
+                "<color=#FFF>You phase through doors like a spirit.</color>",
+                "<color=#DDD>Your body fades in and out of existence.</color>",
+                "<color=#EEE>You are unseen... for now.</color>"
+            ],
+
+            [CandyKindID.Yellow] =
+            [
+                "<color=yellow>You got Yellow Candy</color>",
+                "<color=#FFD700>You feel unstoppable speed coursing through your legs!</color>",
+                "<color=#FFFF00>Zoom! You're gone before they blink!</color>",
+                "<color=#FFF44F>You're outrunning your own shadow!</color>",
+                "<color=#FFEA00>Warning: Mach 2 achieved!</color>"
             ],
         };
-
     }
 }

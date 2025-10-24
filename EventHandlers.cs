@@ -46,14 +46,20 @@ namespace CandyChances
                 {
                     foreach (CustomRole role in customRoles)
                     {
-                        if (config.ModifiedUseLimitsforCustomRoles.TryGetValue(role.Name, out usageLimit))
+                        if (config.ModifiedUseLimitsforCustomRoles.TryGetValue(role.Name, out int customUsageLimit))
+                        {
+                            usageLimit = customUsageLimit;
                             break;
+                        }
                     }
                 }
             }
 
             if (usageLimit == Scp330Interobject.MaxAmountPerLife && config.OverrideUseLimitsforRoles)
-                config.ModifiedUseLimits.TryGetValue(ev.Player.Role.Type, out usageLimit);
+            {
+                if (config.ModifiedUseLimits.TryGetValue(ev.Player.Role.Type, out int customUsageLimit))
+                    usageLimit = customUsageLimit;
+            }
 
             ev.ShouldSever = ev.UsageCount >= usageLimit;
             #endregion
@@ -71,13 +77,13 @@ namespace CandyChances
             string hint = null;
             if (config.ShowCandyHint)
             {
-                Dictionary<CandyKindID, string[]> hintDictionary = HolidayUtils.IsHolidayActive(HolidayType.Halloween) ? translation.HallowenCandyHints : translation.CandyHints;
+                Dictionary<CandyKindID, string[]> hintDictionary = HolidayUtils.IsHolidayActive(HolidayType.Halloween) ?
+                    translation.HallowenCandyHints : 
+                    translation.CandyHints;
+
                 if (hintDictionary.TryGetValue(ev.Candy, out var hints))
                     hint = hints.RandomItem();
             }
-
-            if (config.ShowCandyHint && translation.CandyHints.TryGetValue(ev.Candy, out string[] candyHints))
-                hint = candyHints.RandomItem();
 
             if (config.ShowRemainingUseHint)
             {
