@@ -84,7 +84,7 @@ namespace CandyChances
                     translation.HallowenCandyHints : 
                     translation.CandyHints;
 
-                if (hintDictionary.TryGetValue(ev.Candy, out var hints))
+                if (hintDictionary.TryGetValue(ev.Candy, out string[] hints))
                     hint = hints.RandomItem();
             }
 
