@@ -15,6 +15,7 @@ namespace CandyChances
 {
     public class EventHandlers
     {
+        private bool isHallowen = false;
         public void OnRoundStarted()
         {
             Config config = Plugin.Instance.Config;
@@ -24,6 +25,8 @@ namespace CandyChances
 
             if (config.OverrideCandyTakeCooldown)
                 Scp330Interobject.TakeCooldown = config.ModifiedCandyTakeCooldown;
+
+            isHallowen = HolidayUtils.IsHolidayActive(HolidayType.Halloween);
         }
 
         public void OnInteractingScp330(InteractingScp330EventArgs ev)
@@ -77,7 +80,7 @@ namespace CandyChances
             string hint = null;
             if (config.ShowCandyHint)
             {
-                Dictionary<CandyKindID, string[]> hintDictionary = HolidayUtils.IsHolidayActive(HolidayType.Halloween) ?
+                Dictionary<CandyKindID, string[]> hintDictionary = isHallowen ?
                     translation.HallowenCandyHints : 
                     translation.CandyHints;
 
