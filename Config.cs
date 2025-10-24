@@ -21,7 +21,7 @@ namespace CandyChances
         public int ModifiedGlobalUseLimit { get; set; } = 3;
 
 
-        [Description("Modified candy spawn chances in SCP-330 bowl. (Note: Default candy chance weights is 1, the values ​​of all candies are added together and a random value is selected)")]
+        [Description("Modified candy spawn chances in SCP-330 bowl.")]
         public Dictionary<CandyKindID, float> CandyChances { get; set; } = new()
         {
             {CandyKindID.Blue,   15f},
@@ -31,6 +31,25 @@ namespace CandyChances
             {CandyKindID.Rainbow,15f},
             {CandyKindID.Red,    15f},
             {CandyKindID.Yellow, 15f},
+        };
+
+
+        [Description("Modified Hallowen candy spawn chances in SCP-330 bowl.")]
+        public Dictionary<CandyKindID, float> HallowenCandyChances { get; set; } = new()
+        {
+            {CandyKindID.Black, 6f},
+            {CandyKindID.Blue, 5f},
+            {CandyKindID.Brown, 0f},
+            {CandyKindID.Evil, 0.1f},
+            {CandyKindID.Gray, 9.9f},
+            {CandyKindID.Green, 11f},
+            {CandyKindID.Orange, 10f},
+            {CandyKindID.Pink, 4f},
+            {CandyKindID.Purple, 11f},
+            {CandyKindID.Rainbow, 11f},
+            {CandyKindID.Red, 11f},
+            {CandyKindID.White, 10f},
+            {CandyKindID.Yellow, 11f},
         };
 
 

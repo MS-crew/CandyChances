@@ -1,8 +1,15 @@
-﻿using Exiled.CustomRoles.API;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
 using Exiled.Events.EventArgs.Scp330;
+
 using Interactables.Interobjects;
-using System.Collections.ObjectModel;
+
+using InventorySystem.Items.Usables.Scp330;
+
+using MapGeneration.Holidays;
 
 namespace CandyChances
 {
@@ -62,6 +69,13 @@ namespace CandyChances
 
 
             string hint = null;
+            if (config.ShowCandyHint)
+            {
+                Dictionary<CandyKindID, string[]> hintDictionary = HolidayUtils.IsHolidayActive(HolidayType.Halloween) ? translation.HallowenCandyHints : translation.CandyHints;
+                if (hintDictionary.TryGetValue(ev.Candy, out var hints))
+                    hint = hints.RandomItem();
+            }
+
             if (config.ShowCandyHint && translation.CandyHints.TryGetValue(ev.Candy, out string[] candyHints))
                 hint = candyHints.RandomItem();
 

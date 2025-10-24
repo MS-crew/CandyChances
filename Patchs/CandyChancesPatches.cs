@@ -9,9 +9,7 @@ namespace CandyChances
         public static void Postfix(ref float __result)
         {
             if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Blue, out float chance))
-            {
                 __result = chance;
-            }
         }
     }
 
@@ -21,9 +19,7 @@ namespace CandyChances
         public static void Postfix(ref float __result)
         {
             if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Green, out float chance))
-            {
                 __result = chance;
-            }
         }
     }
 
@@ -33,9 +29,7 @@ namespace CandyChances
         public static void Postfix(ref float __result)
         {
             if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Pink, out float chance))
-            {
                 __result = chance;
-            }
         }
     }
 
@@ -45,9 +39,7 @@ namespace CandyChances
         public static void Postfix(ref float __result)
         {
             if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Purple, out float chance))
-            {
                 __result = chance;
-            }
         }
     }
 
@@ -57,9 +49,7 @@ namespace CandyChances
         public static void Postfix(ref float __result)
         {
             if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Rainbow, out float chance))
-            {
                 __result = chance;
-            }
         }
     }
 
@@ -69,9 +59,7 @@ namespace CandyChances
         public static void Postfix(ref float __result)
         {
             if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Red, out float chance))
-            {
                 __result = chance;
-            }
         }
     }
 
@@ -81,9 +69,7 @@ namespace CandyChances
         public static void Postfix(ref float __result)
         {
             if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Yellow, out float chance))
-            {
                 __result = chance;
-            }
         }
     }
 }
