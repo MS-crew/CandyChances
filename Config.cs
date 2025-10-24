@@ -37,19 +37,19 @@ namespace CandyChances
         [Description("Modified Hallowen candy spawn chances in SCP-330 bowl.")]
         public Dictionary<CandyKindID, float> HallowenCandyChances { get; set; } = new()
         {
-            {CandyKindID.Black, 6f},
-            {CandyKindID.Blue, 5f},
-            {CandyKindID.Brown, 0f},
-            {CandyKindID.Evil, 0.1f},
-            {CandyKindID.Gray, 9.9f},
-            {CandyKindID.Green, 11f},
-            {CandyKindID.Orange, 10f},
-            {CandyKindID.Pink, 4f},
-            {CandyKindID.Purple, 11f},
+            {CandyKindID.Black,    6f},
+            {CandyKindID.Blue,     5f},
+            {CandyKindID.Brown,    0f},
+            {CandyKindID.Evil,   0.1f},
+            {CandyKindID.Gray,   9.9f},
+            {CandyKindID.Green,   11f},
+            {CandyKindID.Orange,  10f},
+            {CandyKindID.Pink,     4f},
+            {CandyKindID.Purple,  11f},
             {CandyKindID.Rainbow, 11f},
-            {CandyKindID.Red, 11f},
-            {CandyKindID.White, 10f},
-            {CandyKindID.Yellow, 11f},
+            {CandyKindID.Red,     11f},
+            {CandyKindID.White,   10f},
+            {CandyKindID.Yellow,  11f},
         };
 
 
