@@ -103,6 +103,7 @@ namespace CandyChances
             ]
         };
 
+        #if HALLOWEN
         [Description("Random hints shown when taking HALLOWEEN candies from SCP-330.")]
         public Dictionary<CandyKindID, string[]> HallowenCandyHints { get; set; } = new()
         {
@@ -225,5 +226,6 @@ namespace CandyChances
                 "<color=#FFEA00>Warning: Mach 2 achieved!</color>"
             ],
         };
+        #endif
     }
 }

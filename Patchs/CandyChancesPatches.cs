@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using InventorySystem.Items.Usables.Scp330;
 
-namespace CandyChances
+namespace CandyChances.Patchs
 {
     [HarmonyPatch(typeof(CandyBlue), nameof(CandyBlue.SpawnChanceWeight), MethodType.Getter)]
     public static class CandyBluePatch

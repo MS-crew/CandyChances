@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿#if HALLOWEN
+using HarmonyLib;
 using InventorySystem.Items.Usables.Scp330;
 
 namespace CandyChances.Patchs
@@ -133,3 +134,4 @@ namespace CandyChances.Patchs
         }
     }
 }
+#endif

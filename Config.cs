@@ -33,15 +33,15 @@ namespace CandyChances
             {CandyKindID.Yellow, 15f},
         };
 
-
+        #if HALLOWEN
         [Description("Modified Hallowen candy spawn chances in SCP-330 bowl.")]
         public Dictionary<CandyKindID, float> HallowenCandyChances { get; set; } = new()
         {
             {CandyKindID.Black,    6f},
             {CandyKindID.Blue,     5f},
-            {CandyKindID.Brown,    0f},
-            {CandyKindID.Evil,   0.1f},
-            {CandyKindID.Gray,   9.9f},
+            {CandyKindID.Brown,    5f},
+            {CandyKindID.Evil,     5f},
+            {CandyKindID.Gray,    10f},
             {CandyKindID.Green,   11f},
             {CandyKindID.Orange,  10f},
             {CandyKindID.Pink,     4f},
@@ -51,10 +51,11 @@ namespace CandyChances
             {CandyKindID.White,   10f},
             {CandyKindID.Yellow,  11f},
         };
-
+        #endif
 
         [Description("Hint duration and visibility options.")]
         public float HintTime { get; set; } = 3;
+        public float HintPositionRuei { get; set; } = 300;
         public bool ShowCandyHint { get; set; } = true;
         public bool ShowRemainingUseHint { get; set; } = true;
         public bool ShowHandsSeveredHint { get; set; } = true;
@@ -73,5 +74,9 @@ namespace CandyChances
         {
             { "Example Role Name", 5 },
         };
+
+        public HintTypes HintType {  get; set; } = HintTypes.BaseGame;
+
+        public enum HintTypes { BaseGame, Ruei } 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using Exiled.API.Features;
 using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
 using Exiled.Events.EventArgs.Scp330;
@@ -9,13 +10,20 @@ using Interactables.Interobjects;
 
 using InventorySystem.Items.Usables.Scp330;
 
-using MapGeneration.Holidays;
+
+#if RUEI
+using RueI.API;
+using RueI.API.Elements;
+#endif
 
 namespace CandyChances
 {
     public class EventHandlers
     {
-        private bool isHallowen = false;
+        #if RUEI
+        private static readonly Tag Scp330HintsTag = new("CandyChances");
+        #endif
+
         public void OnRoundStarted()
         {
             Config config = Plugin.Instance.Config;
@@ -25,8 +33,6 @@ namespace CandyChances
 
             if (config.OverrideCandyTakeCooldown)
                 Scp330Interobject.TakeCooldown = config.ModifiedCandyTakeCooldown;
-
-            isHallowen = HolidayUtils.IsHolidayActive(HolidayType.Halloween);
         }
 
         public void OnInteractingScp330(InteractingScp330EventArgs ev)
@@ -35,16 +41,32 @@ namespace CandyChances
                 return;
 
             Config config = Plugin.Instance.Config;
-            Translation translation = Plugin.Instance.Translation;
 
             ev.ShouldPlaySound = config.ShouldPlayTakeSound;
 
-            #region CustomUseLimits
+            int usageLimit = GetUsageLimit(ev.Player);
+            ev.ShouldSever = ev.UsageCount >= usageLimit;
+
+            if (ev.ShouldSever)
+            {
+                if (config.ShowHandsSeveredHint)
+                    GiveHint(ev.Player, Plugin.Instance.Translation.HandsSeveredHints.RandomItem(), config.HintPositionRuei, config.HintTime);
+
+                return;
+            }
+
+            GiveCandyHint(ev.Player, ev.Candy, usageLimit, ev.UsageCount);
+        }
+
+        private int GetUsageLimit(Player player)
+        {
+            Config config = Plugin.Instance.Config;
+
             int usageLimit = Scp330Interobject.MaxAmountPerLife;
 
             if (config.OverrideUseLimitsforCustomRoles)
             {
-                ReadOnlyCollection<CustomRole> customRoles = ev.Player.GetCustomRoles();
+                ReadOnlyCollection<CustomRole> customRoles = player.GetCustomRoles();
                 if (customRoles != null)
                 {
                     foreach (CustomRole role in customRoles)
@@ -60,44 +82,51 @@ namespace CandyChances
 
             if (usageLimit == Scp330Interobject.MaxAmountPerLife && config.OverrideUseLimitsforRoles)
             {
-                if (config.ModifiedUseLimits.TryGetValue(ev.Player.Role.Type, out int customUsageLimit))
+                if (config.ModifiedUseLimits.TryGetValue(player.Role.Type, out int customUsageLimit))
                     usageLimit = customUsageLimit;
             }
+            
+            return usageLimit;
+        }
 
-            ev.ShouldSever = ev.UsageCount >= usageLimit;
-            #endregion
-
-            #region Hints logics
-            if (ev.ShouldSever)
-            {
-                if (config.ShowHandsSeveredHint)
-                    ev.Player.ShowHint(translation.HandsSeveredHints.RandomItem(), config.HintTime);
-
-                return;
-            }
-
+        private void GiveCandyHint(Player player, CandyKindID candy, int usageLimit, int usageCount)
+        {
+            Config config = Plugin.Instance.Config;
+            Translation translation = Plugin.Instance.Translation;
 
             string hint = null;
             if (config.ShowCandyHint)
             {
-                Dictionary<CandyKindID, string[]> hintDictionary = isHallowen ?
-                    translation.HallowenCandyHints : 
-                    translation.CandyHints;
-
-                if (hintDictionary.TryGetValue(ev.Candy, out var hints))
+                #if HALLOWEN
+                if (translation.HallowenCandyHints.TryGetValue(candy, out string[] hints))
                     hint = hints.RandomItem();
+
+                #else
+                if (translation.CandyHints.TryGetValue(candy, out string[] hints))
+                    hint = hints.RandomItem();
+                #endif
             }
 
             if (config.ShowRemainingUseHint)
             {
-                int remaining = usageLimit - ev.UsageCount - 1;
+                int remaining = usageLimit - usageCount - 1;
                 string remainingHint = translation.RemainingUse.Replace("{0}", remaining.ToString());
                 hint = hint == null ? remainingHint : string.Concat(hint, "\n", remainingHint);
             }
 
             if (hint != null)
-                ev.Player.ShowHint(hint, config.HintTime);
-            #endregion
+                GiveHint(player, hint, config.HintPositionRuei, config.HintTime);
+        }
+
+        private void GiveHint(Player player, string hint, float position, float duration)
+        {
+            #if RUEI
+            RueDisplay display = RueDisplay.Get(player);
+            display.Show(Scp330HintsTag, new BasicElement(position, hint), duration);
+            #else
+
+            player.ShowHint(hint, duration);
+            #endif
         }
     }
 }
