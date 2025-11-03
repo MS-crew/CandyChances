@@ -9,10 +9,18 @@ using Interactables.Interobjects;
 
 using InventorySystem.Items.Usables.Scp330;
 
+#if RUEI
+using RueI.API;
+using RueI.API.Elements;
+#endif
+
 namespace CandyChances
 {
     internal static class Extensions
     {
+        #if RUEI
+        private static readonly Tag Scp330HintsTag = new("CandyChances");
+        #endif
         internal static int GetUsageLimit(this Player player)
         {
             Config config = Plugin.Instance.Config;

@@ -1,29 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
-using Exiled.API.Features;
-using Exiled.CustomRoles.API;
-using Exiled.CustomRoles.API.Features;
-using Exiled.Events.EventArgs.Scp330;
-
+﻿using Exiled.Events.EventArgs.Scp330;
 using Interactables.Interobjects;
-
-using InventorySystem.Items.Usables.Scp330;
-
-
-#if RUEI
-using RueI.API;
-using RueI.API.Elements;
-#endif
 
 namespace CandyChances
 {
     public class EventHandlers
     {
-        #if RUEI
-        private static readonly Tag Scp330HintsTag = new("CandyChances");
-        #endif
-
         public void OnRoundStarted()
         {
             Config config = Plugin.Instance.Config;
