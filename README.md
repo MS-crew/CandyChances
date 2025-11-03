@@ -1,9 +1,9 @@
 <h1 align="center">CandyChances</h1>
 <div align="center">
 <a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/github/downloads/MS-crew/CandyChances/total?style=for-the-badge&logo=github" alt="GitHub Release Download"></a>
-<a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/badge/Build-2.2.0-brightgreen?style=for-the-badge&logo=gitbook" alt="Latest Release"></a>
+<a href="https://github.com/MS-crew/CandyChances/releases"><img src="https://img.shields.io/badge/Build-2.3.0-brightgreen?style=for-the-badge&logo=gitbook" alt="Latest Release"></a>
 <a href="https://github.com/MS-crew/CandyChances/blob/master/LICENSE"><img src="https://img.shields.io/badge/Licence-GPL_3.0-blue?style=for-the-badge&logo=gitbook" alt="General Public License v3.0"></a>
-<a href="https://github.com/ExMod-Team/EXILED"><img src="https://img.shields.io/badge/Exiled-9.0.0-green?style=for-the-badge&logo=gitbook" alt="Exiled Dependency"></a>
+<a href="https://github.com/ExMod-Team/EXILED"><img src="https://img.shields.io/badge/Exiled-9.10.0-green?style=for-the-badge&logo=gitbook" alt="Exiled Dependency"></a>
 </div>
 
 <div align="center">
@@ -48,7 +48,23 @@ candy_chances:
   Red: 15
   Yellow: 15
 
+hallowen_candy_chances:
+  Black: 6
+  Blue: 5
+  Brown: 5
+  Evil: 5
+  Gray: 10
+  Green: 11
+  Orange: 10
+  Pink: 4
+  Purple: 11
+  Rainbow: 11
+  Red: 11
+  White: 10
+  Yellow: 11
+
 hint_time: 3
+hint_position_ruei: 300
 show_candy_hint: true
 show_remaining_use_hint: true
 show_hands_severed_hint: true
