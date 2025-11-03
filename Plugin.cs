@@ -20,9 +20,9 @@ namespace CandyChances
 
         public static Plugin Instance { get; private set; }
 
-        public override Version Version { get; } = new Version(2, 2, 0);
+        public override Version Version { get; } = new Version(2, 3, 0);
 
-        public override Version RequiredExiledVersion { get; } = new Version(9, 0, 0);
+        public override Version RequiredExiledVersion { get; } = new Version(9, 10, 0);
 
         public override void OnEnabled()
         {
