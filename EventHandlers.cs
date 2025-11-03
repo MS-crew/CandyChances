@@ -44,89 +44,18 @@ namespace CandyChances
 
             ev.ShouldPlaySound = config.ShouldPlayTakeSound;
 
-            int usageLimit = GetUsageLimit(ev.Player);
+            int usageLimit = ev.Player.GetUsageLimit();
             ev.ShouldSever = ev.UsageCount >= usageLimit;
 
             if (ev.ShouldSever)
             {
                 if (config.ShowHandsSeveredHint)
-                    GiveHint(ev.Player, Plugin.Instance.Translation.HandsSeveredHints.RandomItem(), config.HintPositionRuei, config.HintTime);
+                    ev.Player.GiveHint(Plugin.Instance.Translation.HandsSeveredHints.RandomItem(), config.HintPositionRuei, config.HintTime);
 
                 return;
             }
 
-            GiveCandyHint(ev.Player, ev.Candy, usageLimit, ev.UsageCount);
-        }
-
-        private int GetUsageLimit(Player player)
-        {
-            Config config = Plugin.Instance.Config;
-
-            int usageLimit = Scp330Interobject.MaxAmountPerLife;
-
-            if (config.OverrideUseLimitsforCustomRoles)
-            {
-                ReadOnlyCollection<CustomRole> customRoles = player.GetCustomRoles();
-                if (customRoles != null)
-                {
-                    foreach (CustomRole role in customRoles)
-                    {
-                        if (config.ModifiedUseLimitsforCustomRoles.TryGetValue(role.Name, out int customUsageLimit))
-                        {
-                            usageLimit = customUsageLimit;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (usageLimit == Scp330Interobject.MaxAmountPerLife && config.OverrideUseLimitsforRoles)
-            {
-                if (config.ModifiedUseLimits.TryGetValue(player.Role.Type, out int customUsageLimit))
-                    usageLimit = customUsageLimit;
-            }
-            
-            return usageLimit;
-        }
-
-        private void GiveCandyHint(Player player, CandyKindID candy, int usageLimit, int usageCount)
-        {
-            Config config = Plugin.Instance.Config;
-            Translation translation = Plugin.Instance.Translation;
-
-            string hint = null;
-            if (config.ShowCandyHint)
-            {
-                #if HALLOWEN
-                if (translation.HallowenCandyHints.TryGetValue(candy, out string[] hints))
-                    hint = hints.RandomItem();
-
-                #else
-                if (translation.CandyHints.TryGetValue(candy, out string[] hints))
-                    hint = hints.RandomItem();
-                #endif
-            }
-
-            if (config.ShowRemainingUseHint)
-            {
-                int remaining = usageLimit - usageCount - 1;
-                string remainingHint = translation.RemainingUse.Replace("{0}", remaining.ToString());
-                hint = hint == null ? remainingHint : string.Concat(hint, "\n", remainingHint);
-            }
-
-            if (hint != null)
-                GiveHint(player, hint, config.HintPositionRuei, config.HintTime);
-        }
-
-        private void GiveHint(Player player, string hint, float position, float duration)
-        {
-            #if RUEI
-            RueDisplay display = RueDisplay.Get(player);
-            display.Show(Scp330HintsTag, new BasicElement(position, hint), duration);
-            #else
-
-            player.ShowHint(hint, duration);
-            #endif
+            ev.Player.GiveCandyHint(ev.Candy, usageLimit, ev.UsageCount);
         }
     }
 }

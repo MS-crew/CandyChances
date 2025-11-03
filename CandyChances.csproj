@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Patchs\CandyChancesPatches.cs" />
     <Compile Include="Patchs\HallowenCandyChancesPatches.cs" />
     <Compile Include="Plugin.cs" />
