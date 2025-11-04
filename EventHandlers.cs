@@ -1,5 +1,6 @@
-﻿using Exiled.Events.EventArgs.Scp330;
-using Interactables.Interobjects;
+﻿using Interactables.Interobjects;
+
+using Exiled.Events.EventArgs.Scp330;
 
 namespace CandyChances
 {
@@ -23,10 +24,9 @@ namespace CandyChances
 
             Config config = Plugin.Instance.Config;
 
-            ev.ShouldPlaySound = config.ShouldPlayTakeSound;
-
             int usageLimit = ev.Player.GetUsageLimit();
             ev.ShouldSever = ev.UsageCount >= usageLimit;
+            ev.ShouldPlaySound = config.ShouldPlayTakeSound;
 
             if (ev.ShouldSever)
             {
@@ -34,9 +34,10 @@ namespace CandyChances
                     ev.Player.GiveHint(Plugin.Instance.Translation.HandsSeveredHints.RandomItem(), config.HintPositionRuei, config.HintTime);
 
                 return;
-            }
+            }     
 
-            ev.Player.GiveCandyHint(ev.Candy, usageLimit, ev.UsageCount);
+            if (config.ShowCandyHint || config.ShowRemainingUseHint)
+                ev.Player.Give330BowlUsageHint(ev.Candy, usageLimit, ev.UsageCount);
         }
     }
 }

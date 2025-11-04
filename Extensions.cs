@@ -1,13 +1,11 @@
-﻿
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+
+using Interactables.Interobjects;
+using InventorySystem.Items.Usables.Scp330;
 
 using Exiled.API.Features;
 using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
-
-using Interactables.Interobjects;
-
-using InventorySystem.Items.Usables.Scp330;
 
 #if RUEI
 using RueI.API;
@@ -21,12 +19,13 @@ namespace CandyChances
         #if RUEI
         private static readonly Tag Scp330HintsTag = new("CandyChances");
         #endif
+
         internal static int GetUsageLimit(this Player player)
         {
+            bool isSetted = false;
             Config config = Plugin.Instance.Config;
-
             int usageLimit = Scp330Interobject.MaxAmountPerLife;
-
+            
             if (config.OverrideUseLimitsforCustomRoles)
             {
                 ReadOnlyCollection<CustomRole> customRoles = player.GetCustomRoles();
@@ -36,6 +35,7 @@ namespace CandyChances
                     {
                         if (config.ModifiedUseLimitsforCustomRoles.TryGetValue(role.Name, out int customUsageLimit))
                         {
+                            isSetted = true;
                             usageLimit = customUsageLimit;
                             break;
                         }
@@ -43,7 +43,7 @@ namespace CandyChances
                 }
             }
 
-            if (usageLimit == Scp330Interobject.MaxAmountPerLife && config.OverrideUseLimitsforRoles)
+            if (!isSetted && config.OverrideUseLimitsforRoles)
             {
                 if (config.ModifiedUseLimits.TryGetValue(player.Role.Type, out int customUsageLimit))
                     usageLimit = customUsageLimit;
@@ -52,7 +52,7 @@ namespace CandyChances
             return usageLimit;
         }
 
-        internal static void GiveCandyHint(this Player player, CandyKindID candy, int usageLimit, int usageCount)
+        internal static void Give330BowlUsageHint(this Player player, CandyKindID candy, int usageLimit, int usageCount)
         {
             Config config = Plugin.Instance.Config;
             Translation translation = Plugin.Instance.Translation;
@@ -60,14 +60,13 @@ namespace CandyChances
             string hint = null;
             if (config.ShowCandyHint)
             {
-#if HALLOWEN
+                #if HALLOWEN
                 if (translation.HallowenCandyHints.TryGetValue(candy, out string[] hints))
                     hint = hints.RandomItem();
-
-#else
+                #else
                 if (translation.CandyHints.TryGetValue(candy, out string[] hints))
                     hint = hints.RandomItem();
-#endif
+                #endif
             }
 
             if (config.ShowRemainingUseHint)
@@ -77,19 +76,18 @@ namespace CandyChances
                 hint = hint == null ? remainingHint : string.Concat(hint, "\n", remainingHint);
             }
 
-            if (hint != null)
-                player.GiveHint(hint, config.HintPositionRuei, config.HintTime);
+            player.GiveHint(hint, config.HintPositionRuei, config.HintTime);
         }
 
         internal static void GiveHint(this Player player, string hint, float position, float duration)
         {
-#if RUEI
+            #if RUEI
             RueDisplay display = RueDisplay.Get(player);
             display.Show(Scp330HintsTag, new BasicElement(position, hint), duration);
-#else
+            #else
 
             player.ShowHint(hint, duration);
-#endif
+            #endif
         }
     }
 }
