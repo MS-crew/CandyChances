@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-using Interactables.Interobjects;
+﻿using Interactables.Interobjects;
 using InventorySystem.Items.Usables.Scp330;
 
 using Exiled.API.Features;
@@ -16,40 +14,30 @@ namespace CandyChances
 {
     internal static class Extensions
     {
-        #if RUEI
-        private static readonly Tag Scp330HintsTag = new("CandyChances");
-        #endif
+#if RUEI
+        private static readonly Tag s_scp330HintsTag = new("CandyChances");
+#endif
 
         internal static int GetUsageLimit(this Player player)
         {
-            bool isSetted = false;
             Config config = Plugin.Instance.Config;
-            int usageLimit = Scp330Interobject.MaxAmountPerLife;
-            
+
             if (config.OverrideUseLimitsforCustomRoles)
             {
-                ReadOnlyCollection<CustomRole> customRoles = player.GetCustomRoles();
-                if (customRoles != null)
+                foreach (CustomRole role in player.GetCustomRoles())
                 {
-                    foreach (CustomRole role in customRoles)
-                    {
-                        if (config.ModifiedUseLimitsforCustomRoles.TryGetValue(role.Name, out int customUsageLimit))
-                        {
-                            isSetted = true;
-                            usageLimit = customUsageLimit;
-                            break;
-                        }
-                    }
+                    if (config.ModifiedUseLimitsforCustomRoles.TryGetValue(role.Name, out int customUsageLimit))
+                        return customUsageLimit;
                 }
             }
 
-            if (!isSetted && config.OverrideUseLimitsforRoles)
+            if (config.OverrideUseLimitsforRoles)
             {
                 if (config.ModifiedUseLimits.TryGetValue(player.Role.Type, out int customUsageLimit))
-                    usageLimit = customUsageLimit;
+                    return customUsageLimit;
             }
 
-            return usageLimit;
+            return Scp330Interobject.MaxAmountPerLife;
         }
 
         internal static void Give330BowlUsageHint(this Player player, CandyKindID candy, int usageLimit, int usageCount)
@@ -60,13 +48,13 @@ namespace CandyChances
             string hint = null;
             if (config.ShowCandyHint)
             {
-                #if HALLOWEN
+#if HALLOWEN
                 if (translation.HallowenCandyHints.TryGetValue(candy, out string[] hints))
                     hint = hints.RandomItem();
-                #else
+#else
                 if (translation.CandyHints.TryGetValue(candy, out string[] hints))
                     hint = hints.RandomItem();
-                #endif
+#endif
             }
 
             if (config.ShowRemainingUseHint)
@@ -76,18 +64,19 @@ namespace CandyChances
                 hint = hint == null ? remainingHint : string.Concat(hint, "\n", remainingHint);
             }
 
-            player.GiveHint(hint, config.HintPositionRuei, config.HintTime);
+            if (!string.IsNullOrEmpty(hint))
+                player.GiveHint(hint, config.HintPositionRuei, config.HintTime);
         }
 
         internal static void GiveHint(this Player player, string hint, float position, float duration)
         {
-            #if RUEI
+#if RUEI
             RueDisplay display = RueDisplay.Get(player);
-            display.Show(Scp330HintsTag, new BasicElement(position, hint), duration);
-            #else
+            display.Show(s_scp330HintsTag, new BasicElement(position, hint), duration);
+#else
 
             player.ShowHint(hint, duration);
-            #endif
+#endif
         }
     }
 }

@@ -4,9 +4,9 @@ using Exiled.Events.EventArgs.Scp330;
 
 namespace CandyChances
 {
-    public class EventHandlers
+    internal class EventHandlers
     {
-        public void OnRoundStarted()
+        internal void OnRoundStarted()
         {
             Config config = Plugin.Instance.Config;
 
@@ -17,7 +17,7 @@ namespace CandyChances
                 Scp330Interobject.TakeCooldown = config.ModifiedCandyTakeCooldown;
         }
 
-        public void OnInteractingScp330(InteractingScp330EventArgs ev)
+        internal void OnInteractingScp330(InteractingScp330EventArgs ev)
         {
             if (!ev.IsAllowed)
                 return;
@@ -25,10 +25,12 @@ namespace CandyChances
             Config config = Plugin.Instance.Config;
 
             int usageLimit = ev.Player.GetUsageLimit();
-            ev.ShouldSever = ev.UsageCount >= usageLimit;
+            bool reachedLimit = ev.UsageCount >= usageLimit;
+
+            ev.ShouldSever = reachedLimit;
             ev.ShouldPlaySound = config.ShouldPlayTakeSound;
 
-            if (ev.ShouldSever)
+            if (reachedLimit)
             {
                 if (config.ShowHandsSeveredHint)
                     ev.Player.GiveHint(Plugin.Instance.Translation.HandsSeveredHints.RandomItem(), config.HintPositionRuei, config.HintTime);
