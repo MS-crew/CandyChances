@@ -1,6 +1,15 @@
-﻿using Interactables.Interobjects;
+﻿using System;
+using System.Collections.Generic;
 
+using CandyChances.Patchs;
+
+using Exiled.API.Features;
 using Exiled.Events.EventArgs.Scp330;
+
+using Interactables.Interobjects;
+
+using InventorySystem.Items.Usables.Scp330;
+
 
 namespace CandyChances
 {
@@ -10,11 +19,11 @@ namespace CandyChances
         {
             Config config = Plugin.Instance.Config;
 
-            if (config.OverrideGlobalUseLimit)
-                Scp330Interobject.MaxAmountPerLife = config.ModifiedGlobalUseLimit;
-
             if (config.OverrideCandyTakeCooldown)
                 Scp330Interobject.TakeCooldown = config.ModifiedCandyTakeCooldown;
+
+            if (config.OverrideGlobalUseLimit)
+                Scp330Interobject.MaxAmountPerLife = config.ModifiedGlobalUseLimit;
         }
 
         internal void OnInteractingScp330(InteractingScp330EventArgs ev)

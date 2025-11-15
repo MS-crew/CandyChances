@@ -2,8 +2,7 @@
 using System.ComponentModel;
 using Exiled.API.Interfaces;
 using System.Collections.Generic;
-using InventorySystem.Items.Usables.Scp330;
-
+using MapGeneration.Holidays;
 
 namespace CandyChances
 {
@@ -14,44 +13,56 @@ namespace CandyChances
 
 
         [Description("Global Scp330 Bowl settings.")]
-        public bool OverrideCandyTakeCooldown { get; set; }
+        public bool OverrideCandyTakeCooldown { get; set; } = false;
         public float ModifiedCandyTakeCooldown { get; set; } = 2;
 
-        public bool OverrideGlobalUseLimit { get; set; }
+        public bool OverrideGlobalUseLimit { get; set; } = false;
         public int ModifiedGlobalUseLimit { get; set; } = 3;
 
 
-        [Description("Modified candy spawn chances in SCP-330 bowl.")]
-        public Dictionary<CandyKindID, float> CandyChances { get; set; } = new()
+        [Description("Modified candy types in SCP-330 bowl.")]
+        public bool OverrideBowlCandys { get; set; } = false;
+        public List<string> ModifiedBowlCandys { get; set; } = new()
         {
-            {CandyKindID.Blue,   15f},
-            {CandyKindID.Green,  15f},
-            {CandyKindID.Pink,   10f},
-            {CandyKindID.Purple, 15f},
-            {CandyKindID.Rainbow,15f},
-            {CandyKindID.Red,    15f},
-            {CandyKindID.Yellow, 15f},
+            "CandyBlue",
+            "CandyPink",
+            "CandyYellow",
+            "HauntedCandyBlack",
+            "HauntedCandyBrown",
+            "HauntedCandyGray",
+            "HauntedCandyGreen",
+            "HauntedCandyOrange",
+            "HauntedCandyPurple",
+            "HauntedCandyRainbow",
+            "HauntedCandyRed",
         };
 
-        #if HALLOWEN
-        [Description("Modified Hallowen candy spawn chances in SCP-330 bowl.")]
-        public Dictionary<CandyKindID, float> HallowenCandyChances { get; set; } = new()
+
+        [Description("Server holiday mode settings.")]
+        public bool OverrideServerHolidayMode { get; set; } = true;
+        public HolidayType ModifiedServerHolidayMode { get; set; } = HolidayType.Halloween;
+
+
+        [Description("Modified candy spawn chances in SCP-330 bowl.")]
+        public Dictionary<string, float> CandyChances { get; set; } = new()
         {
-            {CandyKindID.Black,    6f},
-            {CandyKindID.Blue,     5f},
-            {CandyKindID.Brown,    5f},
-            {CandyKindID.Evil,     5f},
-            {CandyKindID.Gray,    10f},
-            {CandyKindID.Green,   11f},
-            {CandyKindID.Orange,  10f},
-            {CandyKindID.Pink,     4f},
-            {CandyKindID.Purple,  11f},
-            {CandyKindID.Rainbow, 11f},
-            {CandyKindID.Red,     11f},
-            {CandyKindID.White,   10f},
-            {CandyKindID.Yellow,  11f},
+            {"CandyBlue",             1},
+            {"CandyGreen",            1},
+            {"CandyPink",          0.5f},
+            {"CandyPurple",           1},
+            {"CandyRainbow",          1},
+            {"CandyRed",              1},
+            {"CandyYellow",           1},
+            {"HauntedCandyBlack",     1},
+            {"HauntedCandyBrown",     1},
+            {"HauntedCandyGray",      1},
+            {"HauntedCandyGreen",     1},
+            {"HauntedCandyOrange",    1},
+            {"HauntedCandyPurple",    1},
+            {"HauntedCandyRainbow",   1},
+            {"HauntedCandyRed",       1},
         };
-        #endif
+
 
         [Description("Hint duration and visibility options.")]
         public float HintTime { get; set; } = 3;
@@ -66,7 +77,7 @@ namespace CandyChances
         public bool OverrideUseLimitsforRoles { get; set; }
         public Dictionary<RoleTypeId, int> ModifiedUseLimits { get; set; } = new()
         {
-            { RoleTypeId.Tutorial, 99 },
+            { RoleTypeId.Filmmaker, 99 },
         };
 
         public bool OverrideUseLimitsforCustomRoles { get; set; }
@@ -75,8 +86,17 @@ namespace CandyChances
             { "Example Role Name", 5 },
         };
 
-        public HintTypes HintType {  get; set; } = HintTypes.BaseGame;
 
-        public enum HintTypes { BaseGame, Ruei } 
+        [Description("Orange Candy improvement settings.")]
+        public OrangeCandyImprove OrangeCandySettings { get; set; } = new OrangeCandyImprove();
+
+        public class OrangeCandyImprove
+        {
+            public bool AddLight { get; set; } = true;
+
+            public float Range { get; set; } = 20f;
+
+            public float MaxInsentity { get; set; } = 15000f;
+        }
     }
 }

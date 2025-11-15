@@ -1,75 +1,60 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
+
+using Exiled.API.Features;
+
+using HarmonyLib;
+
 using InventorySystem.Items.Usables.Scp330;
 
 namespace CandyChances.Patchs
 {
-    [HarmonyPatch(typeof(CandyBlue), nameof(CandyBlue.SpawnChanceWeight), MethodType.Getter)]
-    public static class CandyBluePatch
+    [HarmonyPatch]
+    internal static class CandyChanceOverridePatch
     {
-        public static void Postfix(ref float __result)
+        private const string spawnChanceProperty = nameof(ICandy.SpawnChanceWeight);
+        public static IEnumerable<MethodBase> TargetMethods()
         {
-            if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Blue, out float chance))
-                __result = chance;
-        }
-    }
+            foreach (string candyType in Plugin.Instance.Config.CandyChances.Keys)
+            {
+                Type type = candyType.ToCandyType();
+                if (type == null)
+                {
+                    Log.Error($"[Candy] Class not found: {candyType}");
+                    continue;
+                }
 
-    [HarmonyPatch(typeof(CandyGreen), nameof(CandyGreen.SpawnChanceWeight) , MethodType.Getter)]
-    public static class CandyGreenPatch
-    {
-        public static void Postfix(ref float __result)
-        {
-            if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Green, out float chance))
-                __result = chance;
+                MethodInfo getter = AccessTools.PropertyGetter(type, spawnChanceProperty);
+                if (getter != null)
+                {
+                    Log.Debug($"[Candy] Overriding: {candyType}.SpawnChanceWeight");
+                    yield return getter;
+                }
+            }
         }
-    }
 
-    [HarmonyPatch(typeof(CandyPink), nameof(CandyPink.SpawnChanceWeight), MethodType.Getter)]
-    public static class CandyPinkPatch
-    {
-        public static void Postfix(ref float __result)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Pink, out float chance))
-                __result = chance;
-        }
-    }
+            string className = null;
+            var firstInstruction = instructions.FirstOrDefault();
+            if (firstInstruction != null)
+            {
+                var methodBase = firstInstruction.operand as MethodBase;
+                className = methodBase?.DeclaringType?.Name;
+            }
 
-    [HarmonyPatch(typeof(CandyPurple), nameof(CandyPurple.SpawnChanceWeight), MethodType.Getter)]
-    public static class CandyPurplePatch
-    {
-        public static void Postfix(ref float __result)
-        {
-            if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Purple, out float chance))
-                __result = chance;
-        }
-    }
 
-    [HarmonyPatch(typeof(CandyRainbow), nameof(CandyRainbow.SpawnChanceWeight), MethodType.Getter)]
-    public static class CandyRainbowPatch
-    {
-        public static void Postfix(ref float __result)
-        {
-            if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Rainbow, out float chance))
-                __result = chance;
-        }
-    }
+            if (className == null || !Plugin.Instance.Config.CandyChances.TryGetValue(className, out float chance))
+                chance = 1f;
 
-    [HarmonyPatch(typeof(CandyRed), nameof(CandyRed.SpawnChanceWeight), MethodType.Getter)]
-    public static class CandyRedPatch
-    {
-        public static void Postfix(ref float __result)
-        {
-            if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Red, out float chance))
-                __result = chance;
-        }
-    }
-
-    [HarmonyPatch(typeof(CandyYellow), nameof(CandyYellow.SpawnChanceWeight), MethodType.Getter)]
-    public static class CandyYellowPatch
-    {
-        public static void Postfix(ref float __result)
-        {
-            if (Plugin.Instance.Config.CandyChances.TryGetValue(CandyKindID.Yellow, out float chance))
-                __result = chance;
+            return new[]
+            {
+                new CodeInstruction(OpCodes.Ldc_R4, chance),
+                new CodeInstruction(OpCodes.Ret)
+            };
         }
     }
 }

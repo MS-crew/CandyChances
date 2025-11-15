@@ -1,6 +1,9 @@
 ﻿using System;
 
+using CandyChances.Patchs;
+
 using Exiled.API.Features;
+
 using HarmonyLib;
 
 using Scp330 = Exiled.Events.Handlers.Scp330;
@@ -10,9 +13,9 @@ namespace CandyChances
 {
     public class Plugin : Plugin<Config, Translation>
     {
-        private Harmony _harmony;
+        private Harmony harmony;
 
-        private EventHandlers _eventHandlers;
+        private EventHandlers eventHandlers;
 
         internal static Plugin Instance { get; private set; }
 
@@ -22,35 +25,49 @@ namespace CandyChances
 
         public override string Prefix => "CandyChances";
 
-        public override Version Version { get; } = new Version(2, 3, 0);
+        public override Version Version { get; } = new Version(3, 0, 0);
 
         public override Version RequiredExiledVersion { get; } = new Version(9, 10, 0);
 
         public override void OnEnabled()
         {
             Instance = this;
-            _eventHandlers = new EventHandlers();
+            eventHandlers = new EventHandlers();
 
-            Server.RoundStarted += _eventHandlers.OnRoundStarted;
-            Scp330.InteractingScp330 += _eventHandlers.OnInteractingScp330;
+            Server.RoundStarted += eventHandlers.OnRoundStarted;
+            Scp330.InteractingScp330 += eventHandlers.OnInteractingScp330;
 
-            _harmony = new Harmony(Prefix + DateTime.Now.Ticks);
-            _harmony.PatchAll();
+            harmony = new Harmony(Prefix + DateTime.Now.Ticks);
+            DoDynamicPatchs(harmony);
 
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
-            Server.RoundStarted -= _eventHandlers.OnRoundStarted;
-            Scp330.InteractingScp330 -= _eventHandlers.OnInteractingScp330;
+            Server.RoundStarted -= eventHandlers.OnRoundStarted;
+            Scp330.InteractingScp330 -= eventHandlers.OnInteractingScp330;
 
-            _harmony.UnpatchAll(_harmony.Id);
-            _harmony = null;
-            _eventHandlers = null;
+            harmony.UnpatchAll(harmony.Id);
+            harmony = null;
+            eventHandlers = null;
             Instance = null;
 
             base.OnDisabled();
+        }
+
+        private void DoDynamicPatchs(Harmony harmony)
+        {
+            harmony.PatchSingleType(typeof(CandyChanceOverridePatch));
+
+            if (Config.OrangeCandySettings.AddLight)
+                harmony.PatchSingleType(typeof(OrangeCandyImprove));
+
+            if (Config.OverrideBowlCandys)
+                harmony.PatchSingleType(typeof(Scp330CandiesPatch));
+
+            if (Config.OverrideServerHolidayMode)
+                harmony.PatchSingleType(typeof(HolidayPatch));
         }
     }
 }

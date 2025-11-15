@@ -4,6 +4,8 @@ using InventorySystem.Items.Usables.Scp330;
 using Exiled.API.Features;
 using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
+using System;
+using HarmonyLib;
 
 #if RUEI
 using RueI.API;
@@ -17,7 +19,6 @@ namespace CandyChances
 #if RUEI
         private static readonly Tag s_scp330HintsTag = new("CandyChances");
 #endif
-
         internal static int GetUsageLimit(this Player player)
         {
             Config config = Plugin.Instance.Config;
@@ -77,6 +78,29 @@ namespace CandyChances
 
             player.ShowHint(hint, duration);
 #endif
+        }
+
+        internal static Type ToCandyType(this string candyType)
+        {
+            Type type = null;
+            foreach (Type t in typeof(ICandy).Assembly.GetTypes())
+            {
+                if (t.Name == candyType)
+                {
+                    type = t;
+                    break;
+                }
+            }
+            
+            return type;
+        }
+
+        public static void PatchSingleType(this Harmony harmony, Type patchClass)
+        {
+            PatchClassProcessor processor = new(harmony, patchClass);
+            processor.Patch();
+
+            Log.Debug($"Patched {patchClass.FullName}");
         }
     }
 }
