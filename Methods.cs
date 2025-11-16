@@ -1,31 +1,22 @@
 ﻿using System.Collections.Generic;
 
 using Exiled.API.Features;
-using HarmonyLib;
-using UnityEngine;
-using MEC;
 
 using InventorySystem.Items.Usables.Scp330;
 
+using MEC;
+
+using UnityEngine;
+
 using Light = Exiled.API.Features.Toys.Light;
 
-namespace CandyChances.Patchs
+namespace CandyChances
 {
-    
-    [HarmonyPatch(typeof(HauntedCandyOrange), nameof(HauntedCandyOrange.ServerApplyEffects))]
-    internal static class OrangeCandyImprove
+    public class Methods
     {
-        public static void Postfix(ReferenceHub hub) 
-        {
-            Timing.RunCoroutine(PlaySunRoutine(hub).CancelWith(hub));
-            Log.Debug("[OrangeCandyImprove] Sun light effect started.");
-        }
-
-        private static IEnumerator<float> PlaySunRoutine(ReferenceHub hub)
+        public static IEnumerator<float> SunEffect(Player player)
         {
             Config config = Plugin.Instance.Config;
-
-            Player player = Player.Get(hub);
 
             Light light = Light.Create(position: player.Transform.position, rotation: Vector3.zero, scale: Vector3.one * 2, spawn: true, color: new Color(1f, 0.45f, 0.05f));
 

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-using CandyChances.Patchs;
-
+﻿using Exiled.API.Enums;
+using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Scp330;
 
@@ -10,6 +7,7 @@ using Interactables.Interobjects;
 
 using InventorySystem.Items.Usables.Scp330;
 
+using MEC;
 
 namespace CandyChances
 {
@@ -49,6 +47,17 @@ namespace CandyChances
 
             if (config.ShowCandyHint || config.ShowRemainingUseHint)
                 ev.Player.Give330BowlUsageHint(ev.Candy, usageLimit, ev.UsageCount);
+        }
+
+        internal void OnEatenScp330(EatenScp330EventArgs ev)
+        {
+            if (ev.Candy.Kind == CandyKindID.Orange && Plugin.Instance.Config.OrangeCandySettings.AddLight)
+            {
+                ev.Player.SendFakeEffectTo(Player.List, EffectType.OrangeCandy, 1);
+                Timing.RunCoroutine(Methods.SunEffect(ev.Player).CancelWith(ev.Player.GameObject));
+                Log.Debug("[EventHandlers:EatenScp330] Sun light effect started.");
+                return;
+            }
         }
     }
 }

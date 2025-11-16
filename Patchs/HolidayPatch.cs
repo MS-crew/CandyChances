@@ -3,7 +3,11 @@ using System.Reflection.Emit;
 
 using HarmonyLib;
 
+using InventorySystem;
+
 using MapGeneration.Holidays;
+
+using Mirror;
 
 namespace CandyChances.Patchs
 {

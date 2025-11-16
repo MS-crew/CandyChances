@@ -36,19 +36,12 @@ namespace CandyChances.Patchs
             }
         }
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase orginal)
         {
-            string className = null;
-            var firstInstruction = instructions.FirstOrDefault();
-            if (firstInstruction != null)
-            {
-                var methodBase = firstInstruction.operand as MethodBase;
-                className = methodBase?.DeclaringType?.Name;
-            }
+            string candyName = orginal.DeclaringType.Name;
 
-
-            if (className == null || !Plugin.Instance.Config.CandyChances.TryGetValue(className, out float chance))
-                chance = 1f;
+            if (!Plugin.Instance.Config.CandyChances.TryGetValue(candyName, out float chance))
+                return instructions;
 
             return new[]
             {

@@ -35,6 +35,8 @@ namespace CandyChances
             eventHandlers = new EventHandlers();
 
             Server.RoundStarted += eventHandlers.OnRoundStarted;
+
+            Scp330.EatenScp330 += eventHandlers.OnEatenScp330;
             Scp330.InteractingScp330 += eventHandlers.OnInteractingScp330;
 
             harmony = new Harmony(Prefix + DateTime.Now.Ticks);
@@ -46,6 +48,8 @@ namespace CandyChances
         public override void OnDisabled()
         {
             Server.RoundStarted -= eventHandlers.OnRoundStarted;
+
+            Scp330.EatenScp330 -= eventHandlers.OnEatenScp330;
             Scp330.InteractingScp330 -= eventHandlers.OnInteractingScp330;
 
             harmony.UnpatchAll(harmony.Id);
@@ -59,9 +63,6 @@ namespace CandyChances
         private void DoDynamicPatchs(Harmony harmony)
         {
             harmony.PatchSingleType(typeof(CandyChanceOverridePatch));
-
-            if (Config.OrangeCandySettings.AddLight)
-                harmony.PatchSingleType(typeof(OrangeCandyImprove));
 
             if (Config.OverrideBowlCandys)
                 harmony.PatchSingleType(typeof(Scp330CandiesPatch));

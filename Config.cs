@@ -22,6 +22,8 @@ namespace CandyChances
 
         [Description("Modified candy types in SCP-330 bowl.")]
         public bool OverrideBowlCandys { get; set; } = false;
+
+        [Description("List of candy types that will appear in SCP-330 bowl.(All Types  )")]
         public List<string> ModifiedBowlCandys { get; set; } = new()
         {
             "CandyBlue",
