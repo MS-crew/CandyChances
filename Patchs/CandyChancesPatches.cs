@@ -43,13 +43,6 @@ namespace CandyChances.Patchs
 
             if (!Plugin.Instance.Config.CandyChances.TryGetValue(candyName, out float chance))
                 return instructions;
-                var methodBase = firstInstruction.operand as MethodBase;
-                className = methodBase?.DeclaringType?.Name;
-            }
-
-
-            if (className == null || !Plugin.Instance.Config.CandyChances.TryGetValue(className, out float chance))
-                chance = 1f;
 
             return new[]
             {
