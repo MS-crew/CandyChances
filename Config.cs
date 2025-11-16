@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-using Exiled.API.Enums;
-using Exiled.API.Features;
 using Exiled.API.Interfaces;
 
 using InventorySystem.Items.Usables.Scp330;
-
-using MapGeneration.Holidays;
 
 using PlayerRoles;
 
@@ -37,16 +32,16 @@ namespace CandyChances
         {
             "CandyBlue",
             "CandyPink",
+            "CandyRed",
             "CandyYellow",
+            "CandyRainbow",
+            "HauntedCandyGray",
+            "HauntedCandyWhite",
             "HauntedCandyBlack",
             "HauntedCandyBrown",
-            "HauntedCandyGray",
             "HauntedCandyGreen",
             "HauntedCandyOrange",
             "HauntedCandyPurple",
-            "HauntedCandyRainbow",
-            "HauntedCandyRed",
-            "HauntedCandyWhite"
         };
 
         [Description("Modifie candy spawn chances.")]
@@ -74,6 +69,10 @@ namespace CandyChances
         };
 
 
+        [Description("Fix for Halloween event candy issues.")]
+        public bool TryReplicateHalloweenCandys { get; set; } = true;
+
+
         [Description("Hint duration and visibility options.")]
         public float HintTime { get; set; } = 3;
         public float HintPositionRuei { get; set; } = 300;
@@ -97,50 +96,7 @@ namespace CandyChances
         };
 
 
-        [Description("Hallowen Candys improvement settings.")]
-        public OrangeCandyImprove OrangeCandySettings { get; set; } = new OrangeCandyImprove();
-
-        public GrayCandyImprove GrayCandySettings { get; set; } = new GrayCandyImprove();
-
-        public WhiteCandyImprove WhiteCandySettings { get; set; } = new WhiteCandyImprove();
-
         [Description("List of candy types names.")]
         public string[] CandyNames { get; set; } = [.. typeof(ICandy).Assembly.GetTypes().Where(t => typeof(ICandy).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract).Select(t => t.Name)];
-
-        public class OrangeCandyImprove
-        {
-            public bool AddLight { get; set; } = true;
-            public float Range { get; set; } = 20f;
-            public float MaxInsentity { get; set; } = 30000f;
-
-
-            public bool AddEffects { get; set; } = true;
-            public List<Effect> Effects { get; set; } =
-            [
-                new Effect(EffectType.Slowness, intensity:50, duration: 30f),
-            ];
-        }
-
-        public class GrayCandyImprove
-        {
-            public bool AddEffects { get; set; } = true;
-
-            public List<Effect> Effects { get; set; } =
-            [
-                new Effect(EffectType.Slowness, intensity:50, duration: 30f),
-            ];
-        }
-
-        public class WhiteCandyImprove
-        {
-            public bool AddEffects { get; set; } = true;
-
-            public List<Effect> Effects { get; set; } =
-            [
-                new Effect(EffectType.Ghostly, duration: 25f),
-                new Effect(EffectType.SilentWalk, duration: 25f),
-                new Effect(EffectType.Fade, intensity: 240, duration: 25f),
-            ];
-        }
     }
 }

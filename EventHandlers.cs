@@ -1,5 +1,6 @@
 ﻿using CandyChances.Components;
 
+using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Scp330;
 
@@ -53,6 +54,9 @@ namespace CandyChances
 
         internal void OnEatenScp330(EatenScp330EventArgs ev)
         {
+            if (!Plugin.Instance.Config.TryReplicateHalloweenCandys)
+                return;
+
             if (ev.Candy.Kind == CandyKindID.Orange)
             {
                 ev.Player.AddEffect<OrangeCandy>();
@@ -66,6 +70,16 @@ namespace CandyChances
             else if (ev.Candy.Kind == CandyKindID.White)
             {
                 ev.Player.AddEffect<White>();
+            }
+
+            else if (ev.Candy is HauntedCandyPurple)
+            {
+                ev.Player.EnableEffect(EffectType.Slowness, duration: HauntedCandyPurple.EffectDuration, intensity: 10);
+            }
+
+            else if (ev.Candy is HauntedCandyGreen)
+            {
+                ev.Player.AddEffect<SugarHigh>();
             }
         }
     }

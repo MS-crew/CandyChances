@@ -1,8 +1,6 @@
-﻿using CustomPlayerEffects;
-
-using Exiled.API.Enums;
+﻿using Exiled.API.Enums;
+using CustomPlayerEffects;
 using Exiled.Events.EventArgs.Player;
-
 using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
 
 namespace CandyChances.Components
@@ -41,7 +39,8 @@ namespace CandyChances.Components
                 return;
 
             ev.IsAllowed = false;
-            ev.Player.DropItem(ev.Item);
+            if (ev.Item != null)
+                ev.Player.DropItem(ev.Item);
         }
 
         public override void OnEffectDisabled()
@@ -60,7 +59,7 @@ namespace CandyChances.Components
             WhiteCandy.FlickerLights(Player.Position);
 
             wearableCache = WearableSync.GetFlags(Player.ReferenceHub);
-            Player.ReferenceHub.DisableWearables((WearableElements)7);
+            Player.ReferenceHub.DisableWearables(WearableElements.Armor | WearableElements.Scp1344Goggles | WearableElements.Scp268Hat);
 
             Player.EnableEffect(EffectType.Ghostly);
             Player.EnableEffect(EffectType.Fade, intensity: 240);

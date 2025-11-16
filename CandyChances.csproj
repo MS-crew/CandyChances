@@ -82,11 +82,11 @@
     <Compile Include="Components\Effect.cs" />
     <Compile Include="Components\Metal.cs" />
     <Compile Include="Components\OrangeCandy.cs" />
+    <Compile Include="Components\SugarHigh.cs" />
     <Compile Include="Components\White.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Methods.cs" />
     <Compile Include="Patchs\CandyChancesPatches.cs" />
     <Compile Include="Patchs\Scp330CandiesPatch.cs" />
     <Compile Include="Plugin.cs" />

@@ -1,22 +1,9 @@
-﻿using System.Collections.Generic;
-
-using CustomPlayerEffects;
-
+﻿using MEC;
+using UnityEngine;
 using Exiled.API.Enums;
 using Exiled.API.Features;
-using Exiled.API.Features.Roles;
-
-using InventorySystem.Items.Usables.Scp330;
-
-using MEC;
-
-using PlayerRoles.FirstPersonControl;
-
 using PlayerRoles.PlayableScps;
-
-using Unity.Collections.LowLevel.Unsafe;
-
-using UnityEngine;
+using System.Collections.Generic;
 
 using Light = Exiled.API.Features.Toys.Light;
 
@@ -51,7 +38,7 @@ namespace CandyChances.Components
 
             light = Light.Create(position: player.Transform.position, rotation: Vector3.zero, scale: Vector3.one * 2, spawn: true, color: new Color(1f, 0.45f, 0.05f));
 
-            light.Range = config.OrangeCandySettings.Range;
+            light.Range = 20;
             light.Intensity = 1f;
             light.ShadowType = LightShadows.None;
             light.Transform.SetParent(player.Transform, true);
@@ -60,7 +47,7 @@ namespace CandyChances.Components
 
             float fadeInSpeed = 0.05f;
             float fadeOutSpeed = 0.05f;
-            float targetIntensity = config.OrangeCandySettings.MaxInsentity;
+            float targetIntensity = 50000;
 
             while (light.Intensity <= targetIntensity)
             {
