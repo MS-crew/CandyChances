@@ -1,9 +1,20 @@
 ﻿using System.Collections.Generic;
 
+using CustomPlayerEffects;
+
+using Exiled.API.Enums;
 using Exiled.API.Features;
+using Exiled.API.Features.Roles;
+
 using InventorySystem.Items.Usables.Scp330;
 
 using MEC;
+
+using PlayerRoles.FirstPersonControl;
+
+using PlayerRoles.PlayableScps;
+
+using Unity.Collections.LowLevel.Unsafe;
 
 using UnityEngine;
 
@@ -23,12 +34,15 @@ namespace CandyChances.Components
             Player.RemoveEffect<Metal>();
             Player.RemoveEffect<White>();
 
+            Player.EnableEffect(EffectType.SoundtrackMute);
             handle = Timing.RunCoroutine(SunEffect(Player));
         }
+
         public override void OnEffectDisabled()
         {
             light?.Destroy();
             Timing.KillCoroutines(handle);
+            Player.DisableEffect(EffectType.SoundtrackMute);
         }
 
         private IEnumerator<float> SunEffect(Player player)
@@ -65,6 +79,23 @@ namespace CandyChances.Components
             light.Destroy();
         }
 
-        public override void OnEffectUpdate() { }
+        public override void OnEffectUpdate() 
+        {
+            Vector3 position = Player.Position;
+            foreach (Player spectator in Player.List)
+            {
+                if (Player == spectator || !HitboxIdentity.IsEnemy(Player.ReferenceHub, spectator.ReferenceHub))
+                    continue;
+
+                if (!spectator.IsAlive || !VisionInformation.GetVisionInformation(spectator.ReferenceHub, spectator.CameraTransform, position, 0.3f, 60f, true, true, 0, false).IsLooking)
+                    continue;
+
+                spectator.EnableEffect(EffectType.OrangeWitness, duration: Time.deltaTime * 1.15f, true);
+                if (Vector3.Distance(spectator.Position, position) <= 4.4f)
+                {
+                    spectator.EnableEffect(EffectType.Flashed, duration: Time.deltaTime * 1.0333333f, true);
+                }
+            }
+        }
     }
 }

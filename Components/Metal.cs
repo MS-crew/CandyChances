@@ -61,17 +61,17 @@ namespace CandyChances.Components
             float damage2 = 80f + damage * 0.4f;
             foreach (Player player2 in Player.List)
             {
-                if (!(player2 == Player) && HitboxIdentity.IsDamageable(Player.ReferenceHub, player2.ReferenceHub))
-                {
-                    Vector3 delta = player2.Position - Player.Position;
-                    float sqrDist = delta.sqrMagnitude;
+                if (player2 == Player || !HitboxIdentity.IsDamageable(Player.ReferenceHub, player2.ReferenceHub))
+                    continue;
 
-                    if (player2.IsAlive && sqrDist <= 16f)
-                    {
-                        player2.Hurt(new GrayCandyDamageHandler(Player.ReferenceHub, damage2));
-                        Player.ShowHitMarker();
-                    }
-                }
+                Vector3 delta = player2.Position - Player.Position;
+                float sqrDist = delta.sqrMagnitude;
+
+                if (!player2.IsAlive || sqrDist > 16f)
+                    continue;
+
+                player2.Hurt(new GrayCandyDamageHandler(Player.ReferenceHub, damage2));
+                Player.ShowHitMarker();
             }
         }
 
@@ -109,7 +109,7 @@ namespace CandyChances.Components
             prevController = fpc.FirstPersonController.FpcModule.Motor.GravityController;
             normalGravity = this.prevController.Gravity;
             fallGravity = this.normalGravity * 4f;
-            Player.EnableEffect(EffectType.Slowness, duration: Duration, intensity: 50);
+            Player.EnableEffect(EffectType.Slowness, intensity: 50);
         }
 
         public override void OnEffectDisabled()
@@ -121,6 +121,8 @@ namespace CandyChances.Components
                 prevController.Gravity = normalGravity;
                 prevController = null;
             }
+
+            Player.DisableEffect(EffectType.Slowness);
         }
     }
 }

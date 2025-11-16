@@ -44,6 +44,9 @@ namespace CandyChances.Components
 
         public override void OnEffectDisabled()
         {
+            Player.DisableEffect(EffectType.Fade);
+            Player.DisableEffect(EffectType.Ghostly);
+            Player.DisableEffect(EffectType.SilentWalk);
             Player.ReferenceHub.EnableWearables((WearableElements)7);
         }
 
@@ -54,9 +57,10 @@ namespace CandyChances.Components
 
             WhiteCandy.FlickerLights(Player.Position);
             Player.ReferenceHub.DisableWearables((WearableElements)7);
-            Player.EnableEffect(EffectType.Ghostly, duration: Duration);
-            Player.EnableEffect(EffectType.SilentWalk, intensity:20, duration: Duration);
-            Player.EnableEffect(EffectType.Fade, intensity: 240, duration: Duration);
+
+            Player.EnableEffect(EffectType.Ghostly);
+            Player.EnableEffect(EffectType.Fade, intensity: 240);
+            Player.EnableEffect(EffectType.SilentWalk, intensity: 20);
         }
 
         public override void OnEffectUpdate() { }
