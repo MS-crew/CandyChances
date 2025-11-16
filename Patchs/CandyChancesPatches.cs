@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -44,10 +43,10 @@ namespace CandyChances.Patchs
             if (!Plugin.Instance.Config.CandyChances.TryGetValue(candyName, out float chance))
                 return instructions;
 
-            return new[]
+            return new CodeInstruction[]
             {
-                new CodeInstruction(OpCodes.Ldc_R4, chance),
-                new CodeInstruction(OpCodes.Ret)
+                new (OpCodes.Ldc_R4, chance),
+                new (OpCodes.Ret)
             };
         }
     }

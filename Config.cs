@@ -1,8 +1,17 @@
-﻿using PlayerRoles;
-using System.ComponentModel;
-using Exiled.API.Interfaces;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+
+using Exiled.API.Enums;
+using Exiled.API.Features;
+using Exiled.API.Interfaces;
+
+using InventorySystem.Items.Usables.Scp330;
+
 using MapGeneration.Holidays;
+
+using PlayerRoles;
 
 namespace CandyChances
 {
@@ -37,25 +46,24 @@ namespace CandyChances
             "HauntedCandyPurple",
             "HauntedCandyRainbow",
             "HauntedCandyRed",
+            "HauntedCandyWhite"
         };
 
-
-        [Description("Server holiday mode settings.")]
-        public bool OverrideServerHolidayMode { get; set; } = true;
-        public HolidayType ModifiedServerHolidayMode { get; set; } = HolidayType.Halloween;
-
+        [Description("Modifie candy spawn chances.")]
+        public bool OverrideCandyChances { get; set; } = false;
 
         [Description("Modified candy spawn chances in SCP-330 bowl.")]
         public Dictionary<string, float> CandyChances { get; set; } = new()
         {
             {"CandyBlue",             1},
             {"CandyGreen",            1},
-            {"CandyPink",          0.5f},
+            {"CandyPink",          0.2f},
             {"CandyPurple",           1},
             {"CandyRainbow",          1},
             {"CandyRed",              1},
             {"CandyYellow",           1},
             {"HauntedCandyBlack",     1},
+            {"HauntedCandyWhite",     1},
             {"HauntedCandyBrown",     1},
             {"HauntedCandyGray",      1},
             {"HauntedCandyGreen",     1},
@@ -89,16 +97,50 @@ namespace CandyChances
         };
 
 
-        [Description("Orange Candy improvement settings.")]
+        [Description("Hallowen Candys improvement settings.")]
         public OrangeCandyImprove OrangeCandySettings { get; set; } = new OrangeCandyImprove();
+
+        public GrayCandyImprove GrayCandySettings { get; set; } = new GrayCandyImprove();
+
+        public WhiteCandyImprove WhiteCandySettings { get; set; } = new WhiteCandyImprove();
+
+        [Description("List of candy types names.")]
+        public string[] CandyNames { get; set; } = [.. typeof(ICandy).Assembly.GetTypes().Where(t => typeof(ICandy).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract).Select(t => t.Name)];
 
         public class OrangeCandyImprove
         {
             public bool AddLight { get; set; } = true;
-
             public float Range { get; set; } = 20f;
+            public float MaxInsentity { get; set; } = 30000f;
 
-            public float MaxInsentity { get; set; } = 15000f;
+
+            public bool AddEffects { get; set; } = true;
+            public List<Effect> Effects { get; set; } =
+            [
+                new Effect(EffectType.Slowness, intensity:50, duration: 30f),
+            ];
+        }
+
+        public class GrayCandyImprove
+        {
+            public bool AddEffects { get; set; } = true;
+
+            public List<Effect> Effects { get; set; } =
+            [
+                new Effect(EffectType.Slowness, intensity:50, duration: 30f),
+            ];
+        }
+
+        public class WhiteCandyImprove
+        {
+            public bool AddEffects { get; set; } = true;
+
+            public List<Effect> Effects { get; set; } =
+            [
+                new Effect(EffectType.Ghostly, duration: 25f),
+                new Effect(EffectType.SilentWalk, duration: 25f),
+                new Effect(EffectType.Fade, intensity: 240, duration: 25f),
+            ];
         }
     }
 }

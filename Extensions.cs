@@ -6,6 +6,8 @@ using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
 using System;
 using HarmonyLib;
+using UnityEngine;
+
 
 #if RUEI
 using RueI.API;
@@ -101,6 +103,25 @@ namespace CandyChances
             processor.Patch();
 
             Log.Debug($"Patched {patchClass.FullName}");
+        }
+
+        public static void AddEffect<T>(this Player player) where T : Behaviour
+        {
+            if (player.GameObject.TryGetComponent(out T effect))
+            {
+                effect.enabled = true;
+                return;
+            }
+
+            player.GameObject.AddComponent<T>().enabled = true;
+        }
+
+        public static void RemoveEffect<T>(this Player player) where T : Behaviour
+        {
+            if (player.GameObject.TryGetComponent(out T effect))
+            {
+                effect.enabled = false;
+            }
         }
     }
 }

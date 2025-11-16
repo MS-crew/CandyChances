@@ -1,6 +1,10 @@
-﻿using System.ComponentModel;
-using Exiled.API.Interfaces;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+
+using Exiled.API.Interfaces;
+
 using InventorySystem.Items.Usables.Scp330;
 
 namespace CandyChances
@@ -103,7 +107,10 @@ namespace CandyChances
             ]
         };
 
-        #if HALLOWEN
+        [Description("List of all candy kinds.")]
+        public CandyKindID[] CandyKindNames { get; set; } = [.. Enum.GetValues(typeof(CandyKindID)).Cast<CandyKindID>()];
+
+#if HALLOWEN
         [Description("Random hints shown when taking HALLOWEEN candies from SCP-330.")]
         public Dictionary<CandyKindID, string[]> HallowenCandyHints { get; set; } = new()
         {
@@ -226,6 +233,6 @@ namespace CandyChances
                 "<color=#FFEA00>Warning: Mach 2 achieved!</color>"
             ],
         };
-        #endif
+#endif
     }
 }

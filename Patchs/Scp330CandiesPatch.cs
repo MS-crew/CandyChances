@@ -19,10 +19,10 @@ namespace CandyChances.Patchs
         {
             cachedCandies = BuildCandyList();
 
-            return new[]
+            return new CodeInstruction[]
             {
                 new (OpCodes.Ldsfld, AccessTools.Field(typeof(Scp330CandiesPatch), nameof(Scp330CandiesPatch.cachedCandies))),
-                new CodeInstruction(OpCodes.Ret)
+                new (OpCodes.Ret)
             };
         }
 

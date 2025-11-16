@@ -1,5 +1,5 @@
-﻿using Exiled.API.Enums;
-using Exiled.API.Extensions;
+﻿using CandyChances.Components;
+
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Scp330;
 
@@ -8,6 +8,8 @@ using Interactables.Interobjects;
 using InventorySystem.Items.Usables.Scp330;
 
 using MEC;
+
+using UnityEngine.Rendering;
 
 namespace CandyChances
 {
@@ -51,11 +53,20 @@ namespace CandyChances
 
         internal void OnEatenScp330(EatenScp330EventArgs ev)
         {
-            if (ev.Candy.Kind == CandyKindID.Orange && Plugin.Instance.Config.OrangeCandySettings.AddLight)
+            if (ev.Candy.Kind == CandyKindID.Orange)
             {
-                ev.Player.SendFakeEffectTo(Player.List, EffectType.OrangeCandy, 1);
-                Timing.RunCoroutine(Methods.SunEffect(ev.Player).CancelWith(ev.Player.GameObject));
-                Log.Debug("[EventHandlers:EatenScp330] Sun light effect started.");
+                ev.Player.AddEffect<OrangeCandy>();
+            }
+
+            else if (ev.Candy.Kind == CandyKindID.Gray )
+            {
+                ev.Player.AddEffect<Metal>();
+                return;
+            }
+
+            else if (ev.Candy.Kind == CandyKindID.White)
+            {
+                ev.Player.AddEffect<White>();
                 return;
             }
         }

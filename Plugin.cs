@@ -66,9 +66,6 @@ namespace CandyChances
 
             if (Config.OverrideBowlCandys)
                 harmony.PatchSingleType(typeof(Scp330CandiesPatch));
-
-            if (Config.OverrideServerHolidayMode)
-                harmony.PatchSingleType(typeof(HolidayPatch));
         }
     }
 }
