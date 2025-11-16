@@ -16,6 +16,7 @@ namespace CandyChances.Patchs
     internal static class CandyChanceOverridePatch
     {
         private const string spawnChanceProperty = nameof(ICandy.SpawnChanceWeight);
+
         public static IEnumerable<MethodBase> TargetMethods()
         {
             foreach (string candyType in Plugin.Instance.Config.CandyChances.Keys)
@@ -38,10 +39,10 @@ namespace CandyChances.Patchs
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase orginal)
         {
-            string className = original.DeclaringType.Name;
+            string candyName = original.DeclaringType.Name;
             
-            if (!Plugin.Instance.Config.CandyChances.TryGetValue(className, out float chance))
-                chance = 1f;
+            if (!Plugin.Instance.Config.CandyChances.TryGetValue(candyName, out float chance))
+                return instructions;
 
             return new[]
             {
