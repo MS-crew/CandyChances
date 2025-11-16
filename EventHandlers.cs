@@ -61,13 +61,11 @@ namespace CandyChances
             else if (ev.Candy.Kind == CandyKindID.Gray )
             {
                 ev.Player.AddEffect<Metal>();
-                return;
             }
 
             else if (ev.Candy.Kind == CandyKindID.White)
             {
                 ev.Player.AddEffect<White>();
-                return;
             }
         }
     }

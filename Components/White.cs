@@ -11,6 +11,8 @@ namespace CandyChances.Components
     {
         protected override float Duration => 25;
 
+        private WearableElements wearableCache;
+
         protected override void SubscribeEvents()
         {
             base.SubscribeEvents();
@@ -47,7 +49,7 @@ namespace CandyChances.Components
             Player.DisableEffect(EffectType.Fade);
             Player.DisableEffect(EffectType.Ghostly);
             Player.DisableEffect(EffectType.SilentWalk);
-            Player.ReferenceHub.EnableWearables((WearableElements)7);
+            Player.ReferenceHub.EnableWearables(wearableCache);
         }
 
         public override void OnEffectEnabled()
@@ -56,6 +58,8 @@ namespace CandyChances.Components
             Player.RemoveEffect<OrangeCandy>();
 
             WhiteCandy.FlickerLights(Player.Position);
+
+            wearableCache = WearableSync.GetFlags(Player.ReferenceHub);
             Player.ReferenceHub.DisableWearables((WearableElements)7);
 
             Player.EnableEffect(EffectType.Ghostly);
