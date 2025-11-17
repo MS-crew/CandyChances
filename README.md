@@ -45,7 +45,6 @@ modified_bowl_candys:
 - 'CandyPink'
 - 'CandyRed'
 - 'CandyYellow'
-- 'CandyRainbow'
 - 'HauntedCandyGray'
 - 'HauntedCandyWhite'
 - 'HauntedCandyBlack'
@@ -60,7 +59,6 @@ override_candy_chances: true
 candy_chances:
   CandyBlue: 1
   CandyPink: 0.200000003
-  CandyRainbow: 1
   CandyRed: 1
   CandyYellow: 1
   HauntedCandyBlack: 1
