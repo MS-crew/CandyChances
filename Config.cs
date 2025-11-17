@@ -34,7 +34,6 @@ namespace CandyChances
             "CandyPink",
             "CandyRed",
             "CandyYellow",
-            "CandyRainbow",
             "HauntedCandyGray",
             "HauntedCandyWhite",
             "HauntedCandyBlack",
@@ -53,7 +52,6 @@ namespace CandyChances
         {
             {"CandyBlue",             1},
             {"CandyPink",          0.2f},
-            {"CandyRainbow",          1},
             {"CandyRed",              1},
             {"CandyYellow",           1},
             {"HauntedCandyBlack",     1},
@@ -63,7 +61,7 @@ namespace CandyChances
             {"HauntedCandyGreen",     1},
             {"HauntedCandyOrange",    1},
             {"HauntedCandyPurple",    1},
-            {"HauntedCandyRainbow",    1},
+            {"HauntedCandyRainbow",   1},
         };
 
 

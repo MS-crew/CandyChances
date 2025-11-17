@@ -82,11 +82,6 @@ namespace CandyChances
             {
                 ev.Player.AddEffect<SugarHigh>();
             }
-
-            else if (ev.Candy is HauntedCandyRainbow)
-            {
-                GameObject cloud = PrefabHelper.Spawn(PrefabType.PrismaticCloud, ev.Player.Position, Quaternion.identity);
-            }
         }
     }
 }
