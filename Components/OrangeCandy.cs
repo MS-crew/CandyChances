@@ -22,7 +22,7 @@ namespace CandyChances.Components
             Player.RemoveEffect<White>();
 
             Player.EnableEffect(EffectType.SoundtrackMute);
-            handle = Timing.RunCoroutine(SunEffect(Player));
+            handle = Timing.RunCoroutine(SunEffect(Player).CancelWith(gameObject));
         }
 
         public override void OnEffectDisabled()
@@ -34,8 +34,6 @@ namespace CandyChances.Components
 
         private IEnumerator<float> SunEffect(Player player)
         {
-            Config config = Plugin.Instance.Config;
-
             light = Light.Create(position: player.Transform.position, rotation: Vector3.zero, scale: Vector3.one * 2, spawn: true, color: new Color(1f, 0.45f, 0.05f));
 
             light.Range = 20;

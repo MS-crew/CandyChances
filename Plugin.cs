@@ -6,8 +6,6 @@ using Exiled.API.Features;
 
 using HarmonyLib;
 
-using Hazards;
-
 using Scp330 = Exiled.Events.Handlers.Scp330;
 using Server = Exiled.Events.Handlers.Server;
 

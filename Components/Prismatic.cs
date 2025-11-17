@@ -41,7 +41,7 @@ namespace CandyChances.Components
 
         public override void OnEffectEnabled()
         {
-            regenHandle = Timing.RunCoroutine(HealLoop());
+            regenHandle = Timing.RunCoroutine(HealLoop().CancelWith(gameObject));
         }
 
         public override void OnEffectDisabled()
