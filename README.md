@@ -32,51 +32,83 @@ CandyChances ships with the following default configuration:
 ```yml
 is_enabled: true
 debug: false
-
+# Global Scp330 Bowl settings.
 override_candy_take_cooldown: false
 modified_candy_take_cooldown: 2
-
 override_global_use_limit: false
 modified_global_use_limit: 3
-
+# Modified candy types in SCP-330 bowl.
+override_bowl_candys: false
+# List of candy types that will appear in SCP-330 bowl.(All Types  )
+modified_bowl_candys:
+- 'CandyBlue'
+- 'CandyPink'
+- 'CandyRed'
+- 'CandyYellow'
+- 'CandyRainbow'
+- 'HauntedCandyGray'
+- 'HauntedCandyWhite'
+- 'HauntedCandyBlack'
+- 'HauntedCandyBrown'
+- 'HauntedCandyGreen'
+- 'HauntedCandyOrange'
+- 'HauntedCandyPurple'
+- 'HauntedCandyRainbow'
+# Modifie candy spawn chances.
+override_candy_chances: true
+# Modified candy spawn chances in SCP-330 bowl.
 candy_chances:
-  Blue: 15
-  Green: 15
-  Pink: 10
-  Purple: 15
-  Rainbow: 15
-  Red: 15
-  Yellow: 15
-
-hallowen_candy_chances:
-  Black: 6
-  Blue: 5
-  Brown: 5
-  Evil: 5
-  Gray: 10
-  Green: 11
-  Orange: 10
-  Pink: 4
-  Purple: 11
-  Rainbow: 11
-  Red: 11
-  White: 10
-  Yellow: 11
-
+  CandyBlue: 1
+  CandyPink: 0.200000003
+  CandyRainbow: 1
+  CandyRed: 1
+  CandyYellow: 1
+  HauntedCandyBlack: 1
+  HauntedCandyWhite: 1
+  HauntedCandyBrown: 1
+  HauntedCandyGray: 1
+  HauntedCandyGreen: 1
+  HauntedCandyOrange: 1
+  HauntedCandyPurple: 1
+  HauntedCandyRainbow: 1
+# Try replicate Hallowen candy behaviors.
+try_replicate_halloween_candys: true
+# Hint duration and visibility options.
 hint_time: 3
 hint_position_ruei: 300
 show_candy_hint: true
 show_remaining_use_hint: true
 show_hands_severed_hint: true
 should_play_take_sound: true
-
+# Role based SCP-330 Bowl use limits.
 override_use_limitsfor_roles: false
 modified_use_limits:
-  Tutorial: 99
-
+  Filmmaker: 99
 override_use_limitsfor_custom_roles: false
 modified_use_limitsfor_custom_roles:
   Example Role Name: 5
+# List of candy types names.
+candy_names:
+- 'CandyBlue'
+- 'CandyGreen'
+- 'CandyPink'
+- 'CandyPurple'
+- 'CandyRainbow'
+- 'CandyRed'
+- 'CandyYellow'
+- 'HauntedCandyBlack'
+- 'HauntedCandyBlue'
+- 'HauntedCandyBrown'
+- 'HauntedCandyEvil'
+- 'HauntedCandyGray'
+- 'HauntedCandyGreen'
+- 'HauntedCandyOrange'
+- 'HauntedCandyPink'
+- 'HauntedCandyPurple'
+- 'HauntedCandyRainbow'
+- 'HauntedCandyRed'
+- 'HauntedCandyWhite'
+- 'HauntedCandyYellow'
 ```
 
 ### Translations
