@@ -10,6 +10,7 @@ using InventorySystem.Items.Usables.Scp330;
 
 using MEC;
 
+using UnityEngine;
 using UnityEngine.Rendering;
 
 namespace CandyChances
@@ -80,6 +81,11 @@ namespace CandyChances
             else if (ev.Candy is HauntedCandyGreen)
             {
                 ev.Player.AddEffect<SugarHigh>();
+            }
+
+            else if (ev.Candy is HauntedCandyRainbow)
+            {
+                GameObject cloud = PrefabHelper.Spawn(PrefabType.PrismaticCloud, ev.Player.Position, Quaternion.identity);
             }
         }
     }

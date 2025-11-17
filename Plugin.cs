@@ -6,6 +6,8 @@ using Exiled.API.Features;
 
 using HarmonyLib;
 
+using Hazards;
+
 using Scp330 = Exiled.Events.Handlers.Scp330;
 using Server = Exiled.Events.Handlers.Server;
 
@@ -25,7 +27,7 @@ namespace CandyChances
 
         public override string Prefix => "CandyChances";
 
-        public override Version Version { get; } = new Version(3, 0, 0);
+        public override Version Version { get; } = new Version(3, 1, 0);
 
         public override Version RequiredExiledVersion { get; } = new Version(9, 10, 0);
 
@@ -65,7 +67,15 @@ namespace CandyChances
             harmony.PatchSingleType(typeof(CandyChanceOverridePatch));
 
             if (Config.OverrideBowlCandys)
+            {
                 harmony.PatchSingleType(typeof(Scp330CandiesPatch));
+
+                if (Config.TryReplicateHalloweenCandys)
+                {
+                    harmony.PatchSingleType(typeof(HauntedRainbow));
+                    harmony.PatchSingleType(typeof(PismaticCloudPatch));
+                }
+            }
         }
     }
 }

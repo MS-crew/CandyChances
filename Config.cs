@@ -42,18 +42,17 @@ namespace CandyChances
             "HauntedCandyGreen",
             "HauntedCandyOrange",
             "HauntedCandyPurple",
+            "HauntedCandyRainbow",
         };
 
         [Description("Modifie candy spawn chances.")]
-        public bool OverrideCandyChances { get; set; } = false;
+        public bool OverrideCandyChances { get; set; } = true;
 
         [Description("Modified candy spawn chances in SCP-330 bowl.")]
         public Dictionary<string, float> CandyChances { get; set; } = new()
         {
             {"CandyBlue",             1},
-            {"CandyGreen",            1},
             {"CandyPink",          0.2f},
-            {"CandyPurple",           1},
             {"CandyRainbow",          1},
             {"CandyRed",              1},
             {"CandyYellow",           1},
@@ -64,12 +63,11 @@ namespace CandyChances
             {"HauntedCandyGreen",     1},
             {"HauntedCandyOrange",    1},
             {"HauntedCandyPurple",    1},
-            {"HauntedCandyRainbow",   1},
-            {"HauntedCandyRed",       1},
+            {"HauntedCandyRainbow",    1},
         };
 
 
-        [Description("Fix for Halloween event candy issues.")]
+        [Description("Try replicate Hallowen candy behaviors.")]
         public bool TryReplicateHalloweenCandys { get; set; } = true;
 
 
@@ -83,13 +81,13 @@ namespace CandyChances
 
 
         [Description("Role based SCP-330 Bowl use limits.")]
-        public bool OverrideUseLimitsforRoles { get; set; }
+        public bool OverrideUseLimitsforRoles { get; set; } = false;
         public Dictionary<RoleTypeId, int> ModifiedUseLimits { get; set; } = new()
         {
             { RoleTypeId.Filmmaker, 99 },
         };
 
-        public bool OverrideUseLimitsforCustomRoles { get; set; }
+        public bool OverrideUseLimitsforCustomRoles { get; set; } = false;
         public Dictionary<string, int> ModifiedUseLimitsforCustomRoles { get; set; } = new()
         {
             { "Example Role Name", 5 },

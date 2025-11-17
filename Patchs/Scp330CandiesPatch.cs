@@ -11,11 +11,11 @@ using InventorySystem.Items.Usables.Scp330;
 namespace CandyChances.Patchs
 {
     [HarmonyPatch(typeof(Scp330Candies), nameof(Scp330Candies.Candies), MethodType.Getter)]
-    internal static class Scp330CandiesPatch
+    public static class Scp330CandiesPatch
     {
         private static ICandy[] cachedCandies;
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> _)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> _)
         {
             cachedCandies = BuildCandyList();
 
@@ -43,7 +43,7 @@ namespace CandyChances.Patchs
                     candies.Add(candy);
             }
 
-            return candies.ToArray();
+            return [.. candies];
         }
 
     }

@@ -105,15 +105,18 @@ namespace CandyChances
             Log.Debug($"Patched {patchClass.FullName}");
         }
 
-        public static void AddEffect<T>(this Player player) where T : Behaviour
+        public static T AddEffect<T>(this Player player) where T : Behaviour
         {
-            if (player.GameObject.TryGetComponent(out T effect))
+            T effect;
+            if (player.GameObject.TryGetComponent(out effect))
             {
                 effect.enabled = true;
-                return;
+                return effect;
             }
 
-            player.GameObject.AddComponent<T>().enabled = true;
+            effect = player.GameObject.AddComponent<T>();
+            effect.enabled = true;
+            return effect;
         }
 
         public static void RemoveEffect<T>(this Player player) where T : Behaviour

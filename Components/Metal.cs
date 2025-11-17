@@ -12,7 +12,7 @@ namespace CandyChances.Components
     {
         protected override float Duration => 30;
 
-        private float damageMultiplier = 0.2f;
+        private const float damageMultiplier = 0.2f;
 
         private Vector3 normalGravity, fallGravity;
 
@@ -103,10 +103,9 @@ namespace CandyChances.Components
                 return;
             }
 
-
             prevController = fpc.FirstPersonController.FpcModule.Motor.GravityController;
-            normalGravity = this.prevController.Gravity;
-            fallGravity = this.normalGravity * 4f;
+            normalGravity = prevController.Gravity;
+            fallGravity = normalGravity * 4f;
             Player.EnableEffect(EffectType.Slowness, intensity: 50);
         }
 

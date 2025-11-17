@@ -16,7 +16,7 @@ namespace CandyChances.Patchs
     {
         private const string spawnChanceProperty = nameof(ICandy.SpawnChanceWeight);
 
-        public static IEnumerable<MethodBase> TargetMethods()
+        private static IEnumerable<MethodBase> TargetMethods()
         {
             foreach (string candyType in Plugin.Instance.Config.CandyChances.Keys)
             {
@@ -36,7 +36,7 @@ namespace CandyChances.Patchs
             }
         }
 
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase orginal)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase orginal)
         {
             string candyName = orginal.DeclaringType.Name;
 
