@@ -5,6 +5,7 @@ using Exiled.API.Features;
 using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
 using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
@@ -16,11 +17,29 @@ using RueI.API.Elements;
 
 namespace CandyChances
 {
-    internal static class Extensions
+    public static class Extensions
     {
 #if RUEI
         private static readonly Tag s_scp330HintsTag = new("CandyChances");
 #endif
+
+        private static readonly Dictionary<string, Type> s_candyNametoTypes = BuildTypeLookup();
+
+        private static Dictionary<string, Type> BuildTypeLookup()
+        {
+            Type[] candyTypes = typeof(ICandy).Assembly.GetTypes();
+            Dictionary<string, Type> dict = new(candyTypes.Length, StringComparer.Ordinal);
+
+            for (int i = 0; i < candyTypes.Length; i++)
+            {
+                Type t = candyTypes[i];
+                if (t?.Name != null && !dict.ContainsKey(t.Name))
+                    dict[t.Name] = t;
+            }
+
+            return dict;
+        }
+
         internal static int GetUsageLimit(this Player player)
         {
             Config config = Plugin.Instance.Config;
@@ -82,19 +101,13 @@ namespace CandyChances
 #endif
         }
 
-        internal static Type ToCandyType(this string candyType)
+        public static Type ToCandyType(this string candyType)
         {
-            Type type = null;
-            foreach (Type t in typeof(ICandy).Assembly.GetTypes())
-            {
-                if (t.Name == candyType)
-                {
-                    type = t;
-                    break;
-                }
-            }
-            
-            return type;
+            if (string.IsNullOrEmpty(candyType))
+                return null;
+
+            s_candyNametoTypes.TryGetValue(candyType, out Type found))
+            return found;
         }
 
         public static void PatchSingleType(this Harmony harmony, Type patchClass)
