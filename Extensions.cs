@@ -106,7 +106,7 @@ namespace CandyChances
             if (string.IsNullOrEmpty(candyType))
                 return null;
 
-            s_candyNametoTypes.TryGetValue(candyType, out Type found))
+            s_candyNametoTypes.TryGetValue(candyType, out Type found);
             return found;
         }
 
