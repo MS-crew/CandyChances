@@ -12,10 +12,20 @@ namespace CandyChances.Components
     {
         protected override float Duration => 30;
 
-        private const float damageMultiplier = 0.2f;
+        private const float DefaultDamageMultiplier = 0.2f;
+        private const float MaxFallDamageMultiplier = 0.05f;
+        private const float FallDamageIgnoreThreshold = 35f;
 
+        private const float FallBaseDamage = 80f;
+        private const float FallScaleMultiplier = 0.4f;
+
+        private const float FallRadius = 4f;
+        private const float FallRadiusSqr = FallRadius * FallRadius;
+
+        private const int SlowEffectIntensity = 50;
+        private const float FallGravityMultiplier = 4f;
+        
         private Vector3 normalGravity, fallGravity;
-
         private FpcGravityController prevController;
 
         protected override void SubscribeEvents()
@@ -40,45 +50,49 @@ namespace CandyChances.Components
 
             if (ev.DamageHandler.Type != DamageType.Falldown)
             {
-                ev.Amount *= damageMultiplier;
+                ev.Amount *= DefaultDamageMultiplier;
                 return;
             }
 
-            if (ev.Amount < 35f)
+            if (ev.Amount < FallDamageIgnoreThreshold)
             {
                 ev.Amount = 0;
                 return;
             }
 
             OnServerProcessFall(ev.Amount);
-            ev.Amount *= 0.05f;
+            ev.Amount *= MaxFallDamageMultiplier;
         }
 
         private void OnServerProcessFall(float damage)
         {
-            float damage2 = 80f + damage * 0.4f;
+            Vector3 pos = Player.Position;
+            float damage2 = FallBaseDamage + damage * FallScaleMultiplier;
+            GrayCandyDamageHandler damageHandler = new(Player.ReferenceHub, damage2);
+
             foreach (Player player2 in Player.List)
             {
-                if (player2 == Player || !HitboxIdentity.IsDamageable(Player.ReferenceHub, player2.ReferenceHub))
+                if (player2 == Player )
                     continue;
 
-                Vector3 delta = player2.Position - Player.Position;
-                float sqrDist = delta.sqrMagnitude;
-
-                if (!player2.IsAlive || sqrDist > 16f)
+                if (!player2.IsAlive)
                     continue;
 
-                player2.Hurt(new GrayCandyDamageHandler(Player.ReferenceHub, damage2));
+                if (!HitboxIdentity.IsDamageable(Player.ReferenceHub, player2.ReferenceHub))
+                    continue;
+
+                Vector3 delta = player2.Position - pos;
+                float sqr = delta.sqrMagnitude;
+
+                if (sqr > FallRadiusSqr)
+                    continue;
+
+                player2.Hurt(damageHandler);
                 Player.ShowHitMarker();
             }
         }
 
         public override void OnEffectUpdate()
-        {
-            UpdateGravity();
-        }
-
-        private void UpdateGravity()
         {
             if (prevController == null)
                 return;
@@ -94,6 +108,7 @@ namespace CandyChances.Components
         {
             Player.RemoveEffect<White>();
             Player.RemoveEffect<OrangeCandy>();
+            Player.EnableEffect(EffectType.Slowness, intensity: SlowEffectIntensity);
 
             //şarki oynat
 
@@ -105,21 +120,19 @@ namespace CandyChances.Components
 
             prevController = fpc.FirstPersonController.FpcModule.Motor.GravityController;
             normalGravity = prevController.Gravity;
-            fallGravity = normalGravity * 4f;
-            Player.EnableEffect(EffectType.Slowness, intensity: 50);
+            fallGravity = normalGravity * FallGravityMultiplier;
         }
 
         public override void OnEffectDisabled()
         {
             // şarki durdur
+            Player.DisableEffect(EffectType.Slowness);
 
             if (prevController != null)
             {
                 prevController.Gravity = normalGravity;
                 prevController = null;
             }
-
-            Player.DisableEffect(EffectType.Slowness);
         }
     }
 }

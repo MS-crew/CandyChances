@@ -1,5 +1,4 @@
 ﻿using Exiled.API.Features;
-using Exiled.CustomRoles.API.Features;
 using Exiled.Events.EventArgs.Player;
 
 using MEC;

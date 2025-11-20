@@ -14,18 +14,23 @@ namespace CandyChances.Components
         protected override float Duration => 3f;
 
         private const float HealPerTick = 5f;
+        private const float HealTickDelay = 1f;
+
         private const float DeathSaveHealth = 1f;
-        private const float TeslaImmunityTime = 2f;
-        private const float DamageImmunityTime = 0.25f;
+
+        private const float TeslaImmunityDuration = 2f;
+        private const float DamageImmunityDuration = 0.25f;
+
+        private const float ReducedDamageMultiplier = 0.85f;
 
         private float lastSaveTime;
-
         private CoroutineHandle regenHandle;
 
         public object OriginCloud { get; set; }
 
-        private bool IsHitImmunityActive => lastSaveTime + DamageImmunityTime >= Time.timeSinceLevelLoad;
-        private bool IsTeslaImmunityActive => lastSaveTime + TeslaImmunityTime >= Time.timeSinceLevelLoad; 
+        private bool IsDamageImmune => lastSaveTime + DamageImmunityDuration >= Time.timeSinceLevelLoad;
+
+        private bool IsTeslaImmune => lastSaveTime + TeslaImmunityDuration >= Time.timeSinceLevelLoad;
 
         protected override void SubscribeEvents()
         {
@@ -51,26 +56,25 @@ namespace CandyChances.Components
 
         private IEnumerator<float> HealLoop()
         {
-            while (Player != null && Player.IsAlive && enabled)
+            while (enabled && Player != null && Player.IsAlive)
             {
                 Player.Heal(HealPerTick);
-                yield return Timing.WaitForSeconds(1f);
+                yield return Timing.WaitForSeconds(HealTickDelay);
             }
         }
-
 
         private void OnHurting(HurtingEventArgs ev)
         {
             if (ev.Player != Player)
                 return;
 
-            if (IsHitImmunityActive)
+            if (IsDamageImmune)
             {
                 ev.Amount = 0;
                 return;
             }
 
-            if (IsTeslaImmunityActive && ev.DamageHandler.Type == DamageType.Tesla)
+            if (IsTeslaImmune && ev.DamageHandler.Type == DamageType.Tesla)
             {
                 ev.Amount = 0;
                 return;
@@ -78,7 +82,7 @@ namespace CandyChances.Components
 
             if (!enabled)
             {
-                ev.Amount *= 0.85f;
+                ev.Amount *= ReducedDamageMultiplier;
                 return;
             }
 
@@ -88,7 +92,7 @@ namespace CandyChances.Components
 
             if (hp > ev.Amount || total > ev.Amount)
             {
-                ev.Amount *= 0.85f;
+                ev.Amount *= ReducedDamageMultiplier;
                 return;
             }
 
@@ -98,8 +102,8 @@ namespace CandyChances.Components
                 cloud.IgnoredTargets.Add(Player.ReferenceHub);
 
             lastSaveTime = Time.timeSinceLevelLoad;
-            ev.Amount = Mathf.Max(total - DeathSaveHealth, 0f);
 
+            ev.Amount = Mathf.Max(total - DeathSaveHealth, 0f);
             Player.Health = DeathSaveHealth;
         }
 

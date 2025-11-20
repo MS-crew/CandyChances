@@ -11,8 +11,11 @@ namespace CandyChances.Components
         protected override float Duration => 25f;
 
         private const float ExtraHealth = 200f;
-        private const float RegenPerTick = 6f;
         private const float DisableDuration = 10f;
+
+        private const float RegenPerTick = 6f;
+        private const float RegenTickDelay = 1f;
+        private const float MinHealtforRegen = 100f;
 
         private float cachedMaxHealth;
         private CoroutineHandle regenHandle;
@@ -37,10 +40,10 @@ namespace CandyChances.Components
         {
             while (Player != null && Player.IsAlive)
             {
-                if (Player.Health >= 100f)
+                if (Player.Health >= MinHealtforRegen)
                     Player.Heal(RegenPerTick);
 
-                yield return Timing.WaitForSeconds(1f);
+                yield return Timing.WaitForSeconds(RegenTickDelay);
             }
         }
 

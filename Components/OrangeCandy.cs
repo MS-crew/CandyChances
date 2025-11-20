@@ -11,17 +11,37 @@ namespace CandyChances.Components
 {
     public class OrangeCandy : Effect
     {
+        protected override float Duration => 25;
+
         private Light light;
         private CoroutineHandle handle;
 
-        protected override float Duration => 25;
+        private static Color lightColor = new(1f, 0.45f, 0.05f);
+
+        private const float range = 20f;
+
+        private const float fadeInMult = 1.2f;
+        private const float fadeOutMult = 0.9f;
+
+        private const float fadeInSpeed = 0.05f;
+        private const float fadeOutSpeed = 0.05f;
+
+        private const float firstInsentity = 0.5f;
+        private const float maxInsentity = 50000f;
+
+        private const float FlashDurationMult = 1f;
+        private const float WitnessDurationMult = 1.15f;
+
+        private const float FlashDistance = 4.4f;
+        private const float FlashDistanceSqr = FlashDistance * FlashDistance;
+
+        private const LightShadows shadowType = LightShadows.None;
 
         public override void OnEffectEnabled()
         {
             Player.RemoveEffect<Metal>();
             Player.RemoveEffect<White>();
 
-            Player.EnableEffect(EffectType.SoundtrackMute);
             handle = Timing.RunCoroutine(SunEffect(Player).CancelWith(gameObject));
         }
 
@@ -29,35 +49,31 @@ namespace CandyChances.Components
         {
             light?.Destroy();
             Timing.KillCoroutines(handle);
-            Player.DisableEffect(EffectType.SoundtrackMute);
         }
 
         private IEnumerator<float> SunEffect(Player player)
         {
-            light = Light.Create(position: player.Transform.position, rotation: Vector3.zero, scale: Vector3.one * 2, spawn: true, color: new Color(1f, 0.45f, 0.05f));
+            light = Light.Create(position: player.Transform.position, rotation: Vector3.zero, scale: Vector3.one * 2, spawn: true, color: lightColor);
 
-            light.Range = 20;
-            light.Intensity = 1f;
-            light.ShadowType = LightShadows.None;
+            light.Range = range;
+            light.ShadowType = shadowType;
+            light.Intensity = firstInsentity;
+            
             light.Transform.SetParent(player.Transform, true);
 
             yield return Timing.WaitForOneFrame;
 
-            float fadeInSpeed = 0.05f;
-            float fadeOutSpeed = 0.05f;
-            float targetIntensity = 50000;
-
-            while (light.Intensity <= targetIntensity)
+            while (light.Intensity <= maxInsentity)
             {
-                light.Intensity *= 1.09f;
+                light.Intensity *= fadeInMult;
                 yield return Timing.WaitForSeconds(fadeInSpeed);
             }
 
             yield return Timing.WaitForSeconds(Duration);
 
-            while (light.Intensity > 0.5f)
+            while (light.Intensity > firstInsentity)
             {
-                light.Intensity *= 0.95f;
+                light.Intensity *= fadeOutMult;
                 yield return Timing.WaitForSeconds(fadeOutSpeed);
             }
 
@@ -66,19 +82,21 @@ namespace CandyChances.Components
 
         public override void OnEffectUpdate() 
         {
-            Vector3 position = Player.Position;
+            Vector3 playerPos = Player.Position;
             foreach (Player spectator in Player.List)
             {
-                if (Player == spectator || !HitboxIdentity.IsEnemy(Player.ReferenceHub, spectator.ReferenceHub))
+                if (Player == spectator || !spectator.IsAlive || !HitboxIdentity.IsEnemy(Player.ReferenceHub, spectator.ReferenceHub))
                     continue;
 
-                if (!spectator.IsAlive || !VisionInformation.GetVisionInformation(spectator.ReferenceHub, spectator.CameraTransform, position, 0.3f, 60f, true, true, 0, false).IsLooking)
+                if (!VisionInformation.GetVisionInformation(spectator.ReferenceHub, spectator.CameraTransform, playerPos, 0.3f, 60f, true, true, 0, false).IsLooking)
                     continue;
 
-                spectator.EnableEffect(EffectType.OrangeWitness, duration: Time.deltaTime * 1.15f, true);
-                if (Vector3.Distance(spectator.Position, position) <= 4.4f)
+                spectator.EnableEffect(type: EffectType.OrangeWitness, duration: Time.deltaTime * WitnessDurationMult, addDurationIfActive: true);
+
+                float sqrDist = (spectator.Position - playerPos).sqrMagnitude;
+                if (sqrDist <= FlashDistanceSqr)
                 {
-                    spectator.EnableEffect(EffectType.Flashed, duration: Time.deltaTime * 1.0333333f, true);
+                    spectator.EnableEffect(type: EffectType.Flashed, duration: Time.deltaTime * FlashDurationMult, addDurationIfActive: true);
                 }
             }
         }

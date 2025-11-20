@@ -9,6 +9,10 @@ namespace CandyChances.Components
     {
         protected override float Duration => 25;
 
+        private const int FadeIntensity = 240;
+        private const int SilentWalkIntensity = 20;
+        private const WearableElements BlockedWearables = WearableElements.Armor | WearableElements.Scp1344Goggles | WearableElements.Scp268Hat;
+
         private WearableElements wearableCache;
 
         protected override void SubscribeEvents()
@@ -39,18 +43,9 @@ namespace CandyChances.Components
                 return;
 
             ev.IsAllowed = false;
-            if (ev.Item != null)
-                ev.Player.DropItem(ev.Item);
-        }
 
-        public override void OnEffectDisabled()
-        {
-            Player.DisableEffect(EffectType.Fade);
-            Player.DisableEffect(EffectType.Ghostly);
-            Player.DisableEffect(EffectType.SilentWalk);
-            Player.ReferenceHub.EnableWearables(wearableCache);
+            if (ev.Item != null) ev.Player.DropItem(ev.Item);
         }
-
         public override void OnEffectEnabled()
         {
             Player.RemoveEffect<Metal>();
@@ -59,11 +54,20 @@ namespace CandyChances.Components
             WhiteCandy.FlickerLights(Player.Position);
 
             wearableCache = WearableSync.GetFlags(Player.ReferenceHub);
-            Player.ReferenceHub.DisableWearables(WearableElements.Armor | WearableElements.Scp1344Goggles | WearableElements.Scp268Hat);
+            Player.ReferenceHub.DisableWearables(BlockedWearables);
 
             Player.EnableEffect(EffectType.Ghostly);
-            Player.EnableEffect(EffectType.Fade, intensity: 240);
-            Player.EnableEffect(EffectType.SilentWalk, intensity: 20);
+            Player.EnableEffect(EffectType.Fade, intensity: FadeIntensity);
+            Player.EnableEffect(EffectType.SilentWalk, intensity: SilentWalkIntensity);
+        }
+
+        public override void OnEffectDisabled()
+        {
+            Player.DisableEffect(EffectType.Fade);
+            Player.DisableEffect(EffectType.Ghostly);
+            Player.DisableEffect(EffectType.SilentWalk);
+
+            Player.ReferenceHub.EnableWearables(wearableCache);
         }
 
         public override void OnEffectUpdate() { }

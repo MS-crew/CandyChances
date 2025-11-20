@@ -5,7 +5,6 @@ using Exiled.API.Features;
 using Exiled.CustomRoles.API;
 using Exiled.CustomRoles.API.Features;
 using System;
-using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
@@ -22,23 +21,6 @@ namespace CandyChances
 #if RUEI
         private static readonly Tag s_scp330HintsTag = new("CandyChances");
 #endif
-
-        private static readonly Dictionary<string, Type> s_candyNametoTypes = BuildTypeLookup();
-
-        private static Dictionary<string, Type> BuildTypeLookup()
-        {
-            Type[] candyTypes = typeof(ICandy).Assembly.GetTypes();
-            Dictionary<string, Type> dict = new(candyTypes.Length, StringComparer.Ordinal);
-
-            for (int i = 0; i < candyTypes.Length; i++)
-            {
-                Type t = candyTypes[i];
-                if (t?.Name != null && !dict.ContainsKey(t.Name))
-                    dict[t.Name] = t;
-            }
-
-            return dict;
-        }
 
         internal static int GetUsageLimit(this Player player)
         {
@@ -70,13 +52,8 @@ namespace CandyChances
             string hint = null;
             if (config.ShowCandyHint)
             {
-#if HALLOWEN
-                if (translation.HallowenCandyHints.TryGetValue(candy, out string[] hints))
-                    hint = hints.RandomItem();
-#else
                 if (translation.CandyHints.TryGetValue(candy, out string[] hints))
                     hint = hints.RandomItem();
-#endif
             }
 
             if (config.ShowRemainingUseHint)
@@ -106,7 +83,7 @@ namespace CandyChances
             if (string.IsNullOrEmpty(candyType))
                 return null;
 
-            s_candyNametoTypes.TryGetValue(candyType, out Type found);
+            Data.CandyNametoTypes.TryGetValue(candyType, out Type found);
             return found;
         }
 
@@ -114,8 +91,6 @@ namespace CandyChances
         {
             PatchClassProcessor processor = new(harmony, patchClass);
             processor.Patch();
-
-            Log.Debug($"Patched {patchClass.FullName}");
         }
 
         public static T AddEffect<T>(this Player player) where T : Behaviour

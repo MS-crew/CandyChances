@@ -28,7 +28,7 @@ namespace CandyChances.Patchs
 
         private static ICandy[] BuildCandyList()
         {
-            List<ICandy> candies = new();
+            List<ICandy> candies = [];
 
             foreach (string candyName in Plugin.Instance.Config.ModifiedBowlCandys)
             {

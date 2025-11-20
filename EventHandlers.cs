@@ -1,17 +1,9 @@
-﻿using CandyChances.Components;
+﻿using System;
 
-using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Scp330;
 
 using Interactables.Interobjects;
-
-using InventorySystem.Items.Usables.Scp330;
-
-using MEC;
-
-using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace CandyChances
 {
@@ -58,30 +50,8 @@ namespace CandyChances
             if (!Plugin.Instance.Config.TryReplicateHalloweenCandys)
                 return;
 
-            if (ev.Candy.Kind == CandyKindID.Orange)
-            {
-                ev.Player.AddEffect<OrangeCandy>();
-            }
-
-            else if (ev.Candy.Kind == CandyKindID.Gray )
-            {
-                ev.Player.AddEffect<Metal>();
-            }
-
-            else if (ev.Candy.Kind == CandyKindID.White)
-            {
-                ev.Player.AddEffect<White>();
-            }
-
-            else if (ev.Candy is HauntedCandyPurple)
-            {
-                ev.Player.EnableEffect(EffectType.Slowness, duration: HauntedCandyPurple.EffectDuration, intensity: 10);
-            }
-
-            else if (ev.Candy is HauntedCandyGreen)
-            {
-                ev.Player.AddEffect<SugarHigh>();
-            }
+            if (Data.CandyEffects.TryGetValue(ev.Candy.GetType(), out Action<Player> action))
+                action(ev.Player);
         }
     }
 }

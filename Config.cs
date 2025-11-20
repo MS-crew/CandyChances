@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 using Exiled.API.Interfaces;
-
-using InventorySystem.Items.Usables.Scp330;
 
 using PlayerRoles;
 
@@ -82,7 +79,7 @@ namespace CandyChances
         public bool OverrideUseLimitsforRoles { get; set; } = false;
         public Dictionary<RoleTypeId, int> ModifiedUseLimits { get; set; } = new()
         {
-            { RoleTypeId.Filmmaker, 99 },
+            { RoleTypeId.Tutorial, 99 },
         };
 
         public bool OverrideUseLimitsforCustomRoles { get; set; } = false;
@@ -93,6 +90,6 @@ namespace CandyChances
 
 
         [Description("List of candy types names.")]
-        public string[] CandyNames { get; set; } = [.. typeof(ICandy).Assembly.GetTypes().Where(t => typeof(ICandy).IsAssignableFrom(t) && t.IsClass && !t.IsAbstract).Select(t => t.Name)];
+        public string[] CandyNames { get; set; } = [.. Data.CandyNametoTypes.Keys];
     }
 }
