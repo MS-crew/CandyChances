@@ -31,7 +31,7 @@ namespace CandyChances.Components
         private OpusEncoder encoder;
         private Speaker echoSpeaker;
 
-        private string customInfoCache;
+        private bool tagStatusCache;
         private PlayerInfoArea infoAreaChache;
 
         private readonly Stack<float[]> framePool = new();
@@ -43,6 +43,9 @@ namespace CandyChances.Components
 
         private const int FadeIntensity = 240;
         private const int SilentWalkIntensity = 20;
+
+        private const float MinSpeakerDistance = 1;
+        private const float MaxSpeakerDistance = 20;
 
         private const WearableElements BlockedWearables = WearableElements.Armor | WearableElements.Scp1344Goggles;
 
@@ -63,16 +66,18 @@ namespace CandyChances.Components
                 echoSpeaker = Speaker.Create(Player.Transform, true);
                 echoSpeaker.ControllerId = (byte)Player.Id;
                 echoSpeaker.IsSpatial = true;
+                echoSpeaker.MinDistance = MinSpeakerDistance;
+                echoSpeaker.MaxDistance = MaxSpeakerDistance;
             }
 
             decoder = new OpusDecoder();
             encoder = new OpusEncoder(OpusApplicationType.Voip);
 
-            customInfoCache = Player.CustomInfo;
             infoAreaChache = Player.InfoArea;
+            tagStatusCache = Player.BadgeHidden;
 
-            Player.CustomInfo = "\u200B";//NOT WORK IDK WHY
-            Player.InfoArea = PlayerInfoArea.CustomInfo;
+            Player.BadgeHidden = false;
+            Player.InfoArea = PlayerInfoArea.PowerStatus;
         }
 
         public override void OnEffectDisabled()
@@ -94,8 +99,8 @@ namespace CandyChances.Components
             echoQueue.Clear();
             framePool.Clear();
 
-            Player.CustomInfo = customInfoCache;
             Player.InfoArea = infoAreaChache;
+            Player.BadgeHidden = tagStatusCache;
         }
 
         protected override void SubscribeEvents()
