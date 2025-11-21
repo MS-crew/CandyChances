@@ -101,7 +101,7 @@ namespace CandyChances.Components
                 if (!VisionInformation.GetVisionInformation(spectator.ReferenceHub, spectator.CameraTransform, playerPos, 0.3f, 60f, true, true, 0, false).IsLooking)
                     continue;
 
-                spectator.EnableEffect(type: EffectType.OrangeWitness, duration: Time.deltaTime * WitnessDurationMult, addDurationIfActive: true);
+                spectator.EnableEffect(type: EffectType.Flashed, duration: Time.deltaTime * WitnessDurationMult, addDurationIfActive: true);
 
                 float sqrDist = (spectator.Position - playerPos).sqrMagnitude;
                 if (sqrDist <= FlashDistanceSqr)

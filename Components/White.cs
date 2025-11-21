@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using CustomPlayerEffects;
 
@@ -33,13 +34,22 @@ namespace CandyChances.Components
 
         private bool tagStatusCache;
         private PlayerInfoArea infoAreaChache;
+        private const int FrameSize = 480;
 
-        private readonly Stack<float[]> framePool = new();
-        private readonly Queue<float[]> echoQueue = new();
-        private readonly byte[] encodedBuffer = new byte[512];
+        private static readonly int DelayMain = 42;
+        private static readonly int DelaySmall = 22; 
+
+        private const float VolumeMain = 1;
+        private const float VolumeSmall = 0.6f;
+        private const float Feedback = 0.3f;
+
+        private readonly Queue<float[]> qMain = new();
+        private readonly Queue<float[]> qSmall = new();
         
-        private const int DelayFrames = 10;
-        private const float EchoVolume = 1;
+        private readonly Stack<float[]> framePool = new();
+
+        private readonly byte[] encodedBuffer = new byte[512];
+        private readonly float[] lastFrame = new float[FrameSize];
 
         private const int FadeIntensity = 240;
         private const int SilentWalkIntensity = 20;
@@ -96,7 +106,8 @@ namespace CandyChances.Components
             decoder = null;
             encoder = null;
 
-            echoQueue.Clear();
+            qMain.Clear();
+            qSmall.Clear();
             framePool.Clear();
 
             Player.InfoArea = infoAreaChache;
@@ -142,27 +153,48 @@ namespace CandyChances.Components
             if (ev.Player != Player)
                 yield break;
 
-            float[] frame = RentFrame();
-            int decoded = decoder.Decode(ev.VoiceMessage.Data, ev.VoiceMessage.DataLength, frame);
+            float[] dry = RentFrame();
+            int decoded = decoder.Decode(ev.VoiceMessage.Data, ev.VoiceMessage.DataLength, dry);
 
-            for (int i = decoded; i < 480; i++)
-                frame[i] = 0f;
+            for (int i = decoded; i < FrameSize; i++)
+                dry[i] = 0f;
 
-            for (int i = 0; i < 480; i++)
-                frame[i] *= EchoVolume;
+            qMain.Enqueue(CopyFrame(dry));
+            qSmall.Enqueue(CopyFrame(dry));
 
-            echoQueue.Enqueue(frame);
-
-            if (echoQueue.Count < DelayFrames)
+            if (qMain.Count < DelayMain || qSmall.Count < DelaySmall)
+            {
+                ReturnFrame(dry);
                 yield break;
+            }
 
-            float[] delayed = echoQueue.Dequeue();
+            float[] echoMain = qMain.Dequeue();
+            float[] echoSmall = qSmall.Dequeue();
+            float[] output = RentFrame();
 
-            int encoded = encoder.Encode(delayed, encodedBuffer, 480);
+            for (int i = 0; i < FrameSize; i++)
+            {
+                float v = echoMain[i] * VolumeMain + echoSmall[i] * VolumeSmall + lastFrame[i] * Feedback;
+
+                output[i] = v;
+                lastFrame[i] = v * 0.97f;
+            }
+
+            int encoded = encoder.Encode(output, encodedBuffer, FrameSize);
             AudioMessage msg = new(echoSpeaker.ControllerId, encodedBuffer, encoded);
             NetworkServer.SendToReady(msg, VoiceChatSettings.Channels);
 
-            ReturnFrame(delayed);
+            ReturnFrame(dry);
+            ReturnFrame(echoMain);
+            ReturnFrame(echoSmall);
+            ReturnFrame(output);
+        }
+
+        private float[] CopyFrame(float[] f)
+        {
+            float[] n = RentFrame();
+            Array.Copy(f, n, FrameSize);
+            return n;
         }
 
         private WearableElements ActiveWearables()

@@ -25,7 +25,7 @@ namespace CandyChances
 
         public override string Prefix => "CandyChances";
 
-        public override Version Version { get; } = new Version(3, 1, 1);
+        public override Version Version { get; } = new Version(3, 1, 2);
 
         public override Version RequiredExiledVersion { get; } = new Version(9, 10, 0);
 
