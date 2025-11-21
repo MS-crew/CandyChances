@@ -53,31 +53,41 @@ namespace CandyChances.Components
 
         private IEnumerator<float> SunEffect(Player player)
         {
+            float totalDuration = Duration;
+            float fadeOutTime = 3f;
+            float startTime = Time.time;        
+
             light = Light.Create(position: player.Transform.position, rotation: Vector3.zero, scale: Vector3.one * 2, spawn: true, color: lightColor);
 
             light.Range = range;
             light.ShadowType = shadowType;
             light.Intensity = firstInsentity;
-            
+
             light.Transform.SetParent(player.Transform, true);
 
-            yield return Timing.WaitForOneFrame;
-
-            while (light.Intensity <= maxInsentity)
+            while (light != null && light.Intensity < maxInsentity)
             {
                 light.Intensity *= fadeInMult;
                 yield return Timing.WaitForSeconds(fadeInSpeed);
             }
 
-            yield return Timing.WaitForSeconds(Duration);
+            float elapsed = Time.time - startTime;
+            float timeLeft = totalDuration - elapsed - fadeOutTime;
 
-            while (light.Intensity > firstInsentity)
+            yield return Timing.WaitForSeconds(timeLeft);
+
+            float fadeOutStart = Time.time;
+            float fadeOutEnd = fadeOutStart + fadeOutTime;
+
+            while (light != null && Time.time < fadeOutEnd)
             {
-                light.Intensity *= fadeOutMult;
-                yield return Timing.WaitForSeconds(fadeOutSpeed);
+                float t = 1f - ((Time.time - fadeOutStart) / fadeOutTime);
+                light.Intensity = Mathf.Lerp(firstInsentity, maxInsentity, t);
+
+                yield return Timing.WaitForOneFrame;
             }
 
-            light.Destroy();
+            light?.Destroy();
         }
 
         public override void OnEffectUpdate() 
