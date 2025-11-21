@@ -39,7 +39,7 @@ namespace CandyChances.Components
         private readonly byte[] encodedBuffer = new byte[512];
         
         private const int DelayFrames = 10;
-        private const float EchoVolume = 0.70f;
+        private const float EchoVolume = 1;
 
         private const int FadeIntensity = 240;
         private const int SilentWalkIntensity = 20;
