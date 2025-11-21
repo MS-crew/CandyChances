@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using CustomPlayerEffects;
 
@@ -10,8 +9,6 @@ using Exiled.API.Features.Toys;
 using Exiled.Events.EventArgs.Player;
 
 using InventorySystem.Items;
-
-using MEC;
 
 using Mirror;
 
@@ -74,7 +71,7 @@ namespace CandyChances.Components
             customInfoCache = Player.CustomInfo;
             infoAreaChache = Player.InfoArea;
 
-            Player.CustomInfo = string.Empty;
+            Player.CustomInfo = "\u200B";//NOT WORK IDK WHY
             Player.InfoArea = PlayerInfoArea.CustomInfo;
         }
 
