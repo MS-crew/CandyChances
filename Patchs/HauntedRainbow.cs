@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Reflection.Emit;
 
-using Exiled.API.Enums;
+using CandyChances.Components;
+
 using Exiled.API.Features;
 
 using HarmonyLib;
@@ -27,13 +28,13 @@ namespace CandyChances.Patchs
         {
             Label setOrigin = generator.DefineLabel();
 
-            LocalBuilder prismatic = generator.DeclareLocal(typeof(Components.Prismatic));
+            LocalBuilder prismatic = generator.DeclareLocal(typeof(Prismatic));
 
             List<CodeInstruction> newInstructions = new()
             {
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
-                new(OpCodes.Call, Method(typeof(Extensions), nameof(Extensions.AddEffect)).MakeGenericMethod(typeof(Components.Prismatic))),
+                new(OpCodes.Call, Method(typeof(Extensions), nameof(Extensions.AddEffect)).MakeGenericMethod(typeof(Prismatic))),
                 new(OpCodes.Stloc_S, prismatic.LocalIndex),
 
                 new(OpCodes.Ldarg_2),
@@ -42,7 +43,7 @@ namespace CandyChances.Patchs
 
                 new CodeInstruction(OpCodes.Ldloc_S, prismatic.LocalIndex).WithLabels(setOrigin),
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Callvirt, PropertySetter(typeof(Components.Prismatic), nameof(Components.Prismatic.OriginCloud))),
+                new(OpCodes.Callvirt, PropertySetter(typeof(Prismatic), nameof(Prismatic.OriginCloud))),
 
                 new(OpCodes.Ret),
             };
@@ -60,16 +61,14 @@ namespace CandyChances.Patchs
             if (!Physics.Raycast(player.Position, Vector3.down, out RaycastHit hitInfo, HauntedCandyRainbow.RayMaxDistance, HauntedCandyRainbow.Layer))
                 return false;
 
+            PrismaticCloud prismaticCloud = Object.Instantiate(__instance.Cloud);
             Vector3 targetPos = hitInfo.point + Vector3.up * HauntedCandyRainbow.CloudHeight;
-            GameObject cloud = PrefabHelper.Spawn(PrefabType.PrismaticCloud, targetPos, Quaternion.identity);
 
-            if (!cloud.TryGetComponent<PrismaticCloud>(out PrismaticCloud prismaticCluod))
-                return false;
+            prismaticCloud.SynchronizedPosition = new RelativePosition(targetPos);
 
-            prismaticCluod.SynchronizedPosition = new RelativePosition(targetPos);
-            NetworkServer.Spawn(cloud);
+            NetworkServer.Spawn(prismaticCloud.gameObject);
 
-            player.AddEffect<Components.Prismatic>().OriginCloud = cloud.GetComponent<PrismaticCloud>();
+            player.AddEffect<Prismatic>().OriginCloud = prismaticCloud;
             return false;
         }
     }
