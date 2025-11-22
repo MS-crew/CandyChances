@@ -37,10 +37,11 @@ namespace CandyChances
         }
 
         internal static IReadOnlyDictionary<Type, Action<Player>> CandyEffects { get; } = new Dictionary<Type, Action<Player>>(5)
-        {
+        {  
             { typeof(HauntedCandyGray),  p => p.AddEffect<Metal>() },
             { typeof(HauntedCandyWhite), p => p.AddEffect<White>() },
             { typeof(HauntedCandyGreen), p => p.AddEffect<SugarHigh>() },
+            { typeof(HauntedCandyYellow),p => p.AddEffect<SugarRush>() },
             { typeof(HauntedCandyOrange),p => p.AddEffect<OrangeCandy>() },
             { typeof(HauntedCandyPurple),p => p.EnableEffect(EffectType.Slowness, HauntedCandyPurple.EffectDuration, HauntedCandySlownessInsentity) },
         };

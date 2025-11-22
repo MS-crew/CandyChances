@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using InventorySystem.Items.Usables.Scp330;
+
 using MEC;
 
 using UnityEngine;
@@ -8,7 +10,7 @@ namespace CandyChances.Components
 {
     public class SugarHigh : Effect
     {
-        protected override float Duration => 25f;
+        protected override float Duration => HauntedCandyGreen.SugarHighDuration;
         protected override UpdateMode UpdateMode => UpdateMode.None;
 
         private const float ExtraHealth = 200f;

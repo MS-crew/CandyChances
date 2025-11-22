@@ -83,6 +83,7 @@
     <Compile Include="Components\OrangeCandy.cs" />
     <Compile Include="Components\Prismatic.cs" />
     <Compile Include="Components\SugarHigh.cs" />
+    <Compile Include="Components\SugarRush.cs" />
     <Compile Include="Components\White.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Data.cs" />

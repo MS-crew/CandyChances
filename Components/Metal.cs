@@ -1,10 +1,12 @@
-﻿using UnityEngine;
-using Exiled.API.Enums;
-using PlayerStatsSystem;
+﻿using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Roles;
-using PlayerRoles.FirstPersonControl;
 using Exiled.Events.EventArgs.Player;
+
+using PlayerRoles.FirstPersonControl;
+using PlayerStatsSystem;
+
+using UnityEngine;
 
 namespace CandyChances.Components
 {
