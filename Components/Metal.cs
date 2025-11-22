@@ -11,6 +11,7 @@ namespace CandyChances.Components
     public class Metal : Effect
     {
         protected override float Duration => 30;
+        protected override UpdateMode UpdateMode => UpdateMode.FixedUpdate;
 
         private const float DefaultDamageMultiplier = 0.2f;
         private const float MaxFallDamageMultiplier = 0.05f;
@@ -34,10 +35,53 @@ namespace CandyChances.Components
             Exiled.Events.Handlers.Player.Hurting += OnHurting;
         }
 
-        protected override void UnsubscribeEvents()
+        protected override void UnSubscribeEvents()
         {
-            base.UnsubscribeEvents();
+            base.UnSubscribeEvents();
             Exiled.Events.Handlers.Player.Hurting -= OnHurting;
+        }
+
+        public override void OnEffectEnabled()
+        {
+            Player.RemoveEffect<White>();
+            Player.RemoveEffect<OrangeCandy>();
+            Player.EnableEffect(EffectType.Slowness, intensity: SlowEffectIntensity);
+
+            //şarki oynat
+
+            if (Player.Role is not FpcRole fpc)
+            {
+                prevController = null;
+                return;
+            }
+
+            prevController = fpc.FirstPersonController.FpcModule.Motor.GravityController;
+            normalGravity = prevController.Gravity;
+            fallGravity = normalGravity * FallGravityMultiplier;
+        }
+
+        public override void OnEffectDisabled()
+        {
+            // şarki durdur
+            Player.DisableEffect(EffectType.Slowness);
+
+            if (prevController != null)
+            {
+                prevController.Gravity = normalGravity;
+                prevController = null;
+            }
+        }
+
+        protected override void OnEffectUpdate()
+        {
+            if (prevController == null)
+                return;
+
+            Vector3 vector = (prevController.Motor.Velocity.y < 0f) ? fallGravity : normalGravity;
+            if (prevController.Gravity == vector)
+                return;
+
+            prevController.Gravity = vector;
         }
 
         private void OnHurting(HurtingEventArgs ev)
@@ -72,7 +116,7 @@ namespace CandyChances.Components
 
             foreach (Player player2 in Player.List)
             {
-                if (player2 == Player )
+                if (player2 == Player)
                     continue;
 
                 if (!player2.IsAlive)
@@ -89,49 +133,6 @@ namespace CandyChances.Components
 
                 player2.Hurt(damageHandler);
                 Player.ShowHitMarker();
-            }
-        }
-
-        public override void OnEffectUpdate()
-        {
-            if (prevController == null)
-                return;
-
-            Vector3 vector = (prevController.Motor.Velocity.y < 0f) ? fallGravity : normalGravity;
-            if (prevController.Gravity == vector)
-                return;
-
-            prevController.Gravity = vector;
-        }
-
-        public override void OnEffectEnabled()
-        {
-            Player.RemoveEffect<White>();
-            Player.RemoveEffect<OrangeCandy>();
-            Player.EnableEffect(EffectType.Slowness, intensity: SlowEffectIntensity);
-
-            //şarki oynat
-
-            if (Player.Role is not FpcRole fpc)
-            {
-                prevController = null;
-                return;
-            }
-
-            prevController = fpc.FirstPersonController.FpcModule.Motor.GravityController;
-            normalGravity = prevController.Gravity;
-            fallGravity = normalGravity * FallGravityMultiplier;
-        }
-
-        public override void OnEffectDisabled()
-        {
-            // şarki durdur
-            Player.DisableEffect(EffectType.Slowness);
-
-            if (prevController != null)
-            {
-                prevController.Gravity = normalGravity;
-                prevController = null;
             }
         }
     }

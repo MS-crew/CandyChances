@@ -12,6 +12,7 @@ namespace CandyChances.Components
     public class OrangeCandy : Effect
     {
         protected override float Duration => 25;
+        protected override UpdateMode UpdateMode => UpdateMode.Update;
 
         private Light light;
         private CoroutineHandle handle;
@@ -90,7 +91,7 @@ namespace CandyChances.Components
             light?.Destroy();
         }
 
-        public override void OnEffectUpdate() 
+        protected override void OnEffectUpdate() 
         {
             Vector3 playerPos = Player.Position;
             foreach (Player spectator in Player.List)

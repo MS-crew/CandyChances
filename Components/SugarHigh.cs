@@ -9,6 +9,7 @@ namespace CandyChances.Components
     public class SugarHigh : Effect
     {
         protected override float Duration => 25f;
+        protected override UpdateMode UpdateMode => UpdateMode.None;
 
         private const float ExtraHealth = 200f;
         private const float DisableDuration = 10f;
@@ -69,11 +70,6 @@ namespace CandyChances.Components
                 disableTimer += Time.deltaTime;
                 yield return Timing.WaitForOneFrame;
             }
-        }
-
-        public override void OnEffectUpdate()
-        {
-
         }
     }
 }

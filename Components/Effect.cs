@@ -12,7 +12,10 @@ namespace CandyChances.Components
     public abstract class Effect : MonoBehaviour
     {
         public Player Player { get; private set; }
+
         protected abstract float Duration { get; }
+        protected abstract UpdateMode UpdateMode { get; }
+
 
         private CoroutineHandle disableHandler;
 
@@ -26,9 +29,61 @@ namespace CandyChances.Components
         {
             SubscribeEvents();
             OnEffectEnabled();
+            SubscribeUpdate();
 
             disableHandler = Timing.CallDelayed(Duration, () => enabled = false);
             Log.Debug($"[CandyChances] Effect {GetType().Name} has been enabled for player {Player.Nickname} for {Duration} seconds.");
+        }
+        protected virtual void OnDisable()
+        {
+            UnSubscribeUpdate();
+            UnSubscribeEvents();
+            Timing.KillCoroutines(disableHandler);
+            OnEffectDisabled();
+            
+            Log.Debug($"[CandyChances] Effect {GetType().Name} has been disabled for player {Player.Nickname}.");
+        }
+
+        protected virtual void SubscribeUpdate()
+        {
+            switch (UpdateMode)
+            {
+                case UpdateMode.Update:
+                    StaticUnityMethods.OnUpdate += OnEffectUpdate;
+                    break;
+
+                case UpdateMode.LateUpdate:
+                    StaticUnityMethods.OnLateUpdate += OnEffectUpdate;
+                    break;
+
+                case UpdateMode.FixedUpdate:
+                    StaticUnityMethods.OnFixedUpdate += OnEffectUpdate;
+                    break;
+
+                case UpdateMode.None:
+                    break;
+            }
+        }
+
+        protected virtual void UnSubscribeUpdate()
+        {
+            switch (UpdateMode)
+            {
+                case UpdateMode.Update:
+                    StaticUnityMethods.OnUpdate -= OnEffectUpdate;
+                    break;
+
+                case UpdateMode.LateUpdate:
+                    StaticUnityMethods.OnLateUpdate -= OnEffectUpdate;
+                    break;
+
+                case UpdateMode.FixedUpdate:
+                    StaticUnityMethods.OnFixedUpdate -= OnEffectUpdate;
+                    break;
+
+                case UpdateMode.None:
+                    break;
+            }
         }
 
         protected virtual void SubscribeEvents()
@@ -36,7 +91,7 @@ namespace CandyChances.Components
             PlayerEvents.ChangingRole += OnChangingRole;
         }
 
-        protected virtual void UnsubscribeEvents()
+        protected virtual void UnSubscribeEvents()
         {
             PlayerEvents.ChangingRole -= OnChangingRole;
         }
@@ -49,27 +104,18 @@ namespace CandyChances.Components
             enabled = false;
         }
 
-        protected virtual void OnDisable()
-        {
-            UnsubscribeEvents();
-            Timing.KillCoroutines(disableHandler);
-            OnEffectDisabled();
-            Log.Debug($"[CandyChances] Effect {GetType().Name} has been disabled for player {Player.Nickname}.");
-        }
-
-        protected virtual void Update()
-        {
-            if (!enabled)
-                return;
-
-            this.OnEffectUpdate();
-            Log.Debug($"[CandyChances] Effect {GetType().Name} is updating for player {Player.Nickname}.");
-        }
-
-        public abstract void OnEffectUpdate();
+        public abstract void OnEffectEnabled();
 
         public abstract void OnEffectDisabled();
 
-        public abstract void OnEffectEnabled();
+        protected virtual void OnEffectUpdate() { }
+    }
+
+    public enum UpdateMode
+    {
+        None,
+        Update,
+        LateUpdate,
+        FixedUpdate,
     }
 }

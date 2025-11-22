@@ -12,6 +12,7 @@ namespace CandyChances.Components
     public class Prismatic : Effect
     {
         protected override float Duration => 3f;
+        protected override UpdateMode UpdateMode => UpdateMode.None;
 
         private const float HealPerTick = 5f;
         private const float HealTickDelay = 1f;
@@ -38,9 +39,9 @@ namespace CandyChances.Components
             Exiled.Events.Handlers.Player.Hurting += OnHurting;
         }
 
-        protected override void UnsubscribeEvents()
+        protected override void UnSubscribeEvents()
         {
-            base.UnsubscribeEvents();
+            base.UnSubscribeEvents();
             Exiled.Events.Handlers.Player.Hurting -= OnHurting;
         }
 
@@ -106,7 +107,5 @@ namespace CandyChances.Components
             ev.Amount = Mathf.Max(total - DeathSaveHealth, 0f);
             Player.Health = DeathSaveHealth;
         }
-
-        public override void OnEffectUpdate() { }
     }
 }

@@ -27,6 +27,7 @@ namespace CandyChances.Components
     public class White : Effect
     {
         protected override float Duration => 25;
+        protected override UpdateMode UpdateMode => UpdateMode.None;
 
         private OpusDecoder decoder;
         private OpusEncoder encoder;
@@ -122,9 +123,9 @@ namespace CandyChances.Components
             PlayerHandlers.SearchingPickup += OnSearchingPickup;
         }
 
-        protected override void UnsubscribeEvents()
+        protected override void UnSubscribeEvents()
         {
-            base.UnsubscribeEvents();
+            base.UnSubscribeEvents();
             PlayerHandlers.ChangingItem -= OnChangingItem; 
             PlayerHandlers.VoiceChatting -= OnVoiceChatting;
             PlayerHandlers.SearchingPickup -= OnSearchingPickup;
@@ -146,6 +147,22 @@ namespace CandyChances.Components
             ev.IsAllowed = false;
 
             if (ev.Item != null) ev.Player.DropItem(ev.Item);
+        }
+
+        private WearableElements ActiveWearables()
+        {
+            WearableElements wearables = WearableElements.None;
+
+            foreach (ItemBase item in Player.Inventory.UserInventory.Items.Values)
+            {
+                if (item.ItemTypeId.IsArmor())
+                    wearables |= WearableElements.Armor;
+
+                if (item.ItemTypeId == ItemType.SCP1344)
+                    wearables |= WearableElements.Scp1344Goggles;
+            }
+
+            return wearables;
         }
 
         private IEnumerator<float> OnVoiceChatting(VoiceChattingEventArgs ev)
@@ -197,23 +214,6 @@ namespace CandyChances.Components
             return n;
         }
 
-        private WearableElements ActiveWearables()
-        {
-            WearableElements wearables = WearableElements.None;
-
-            foreach (ItemBase item in Player.Inventory.UserInventory.Items.Values)
-            {
-                if (item.ItemTypeId.IsArmor())
-                    wearables |= WearableElements.Armor;
-
-                if (item.ItemTypeId == ItemType.SCP1344)
-                    wearables |= WearableElements.Scp1344Goggles;
-            }
-
-            return wearables;
-        }
-        
-        public override void OnEffectUpdate() { }
         private void ReturnFrame(float[] f) => framePool.Push(f);
         private float[] RentFrame() => framePool.Count > 0 ? framePool.Pop() : new float[480];
     }
