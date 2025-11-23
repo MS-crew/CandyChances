@@ -36,8 +36,9 @@ namespace CandyChances
             return dict;
         }
 
-        internal static IReadOnlyDictionary<Type, Action<Player>> CandyEffects { get; } = new Dictionary<Type, Action<Player>>(5)
+        internal static IReadOnlyDictionary<Type, Action<Player>> CandyEffects { get; } = new Dictionary<Type, Action<Player>>(7)
         {  
+            { typeof(HauntedCandyRed),  p => p.AddEffect<Spicy>() },
             { typeof(HauntedCandyGray),  p => p.AddEffect<Metal>() },
             { typeof(HauntedCandyWhite), p => p.AddEffect<White>() },
             { typeof(HauntedCandyGreen), p => p.AddEffect<SugarHigh>() },

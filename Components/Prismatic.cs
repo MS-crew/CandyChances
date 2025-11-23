@@ -3,6 +3,8 @@
 using Exiled.API.Enums;
 using Exiled.Events.EventArgs.Player;
 
+using Hazards;
+
 using MEC;
 
 using UnityEngine;
@@ -99,7 +101,7 @@ namespace CandyChances.Components
 
             enabled = false;
 
-            if (OriginCloud is Hazards.PrismaticCloud cloud && cloud.IgnoredTargets != null)
+            if (OriginCloud is PrismaticCloud cloud && cloud.IgnoredTargets != null)
                 cloud.IgnoredTargets.Add(Player.ReferenceHub);
 
             lastSaveTime = Time.timeSinceLevelLoad;
