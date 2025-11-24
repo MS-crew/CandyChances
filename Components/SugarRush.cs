@@ -14,7 +14,6 @@ namespace CandyChances.Components
 
         private float sprintMult; 
         private const float SpeedBoost = 2.2f; 
-        private static readonly RaycastHit[] _hits = new RaycastHit[3];
         private static readonly int WorldMask =LayerMask.GetMask("Default");
 
         public override void OnEffectEnabled()
