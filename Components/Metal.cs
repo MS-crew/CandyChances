@@ -106,8 +106,8 @@ namespace CandyChances.Components
                 return;
             }
 
-            OnServerProcessFall(ev.Amount);
             ev.Amount *= MaxFallDamageMultiplier;
+            OnServerProcessFall(ev.Amount);
         }
 
         private void OnServerProcessFall(float damage)

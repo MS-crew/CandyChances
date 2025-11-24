@@ -30,8 +30,8 @@ namespace CandyChances.Patchs
 
             LocalBuilder prismatic = generator.DeclareLocal(typeof(Prismatic));
 
-            List<CodeInstruction> newInstructions = new()
-            {
+            List<CodeInstruction> newInstructions =
+            [
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
                 new(OpCodes.Call, Method(typeof(Extensions), nameof(Extensions.AddEffect)).MakeGenericMethod(typeof(Prismatic))),
@@ -46,7 +46,7 @@ namespace CandyChances.Patchs
                 new(OpCodes.Callvirt, PropertySetter(typeof(Prismatic), nameof(Prismatic.OriginCloud))),
 
                 new(OpCodes.Ret),
-            };
+            ];
 
             return newInstructions;
         }

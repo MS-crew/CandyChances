@@ -31,10 +31,7 @@ namespace CandyChances.Components
         private const float range = 20f;
 
         private const float fadeInMult = 1.2f;
-        private const float fadeOutMult = 0.9f;
-
         private const float fadeInSpeed = 0.05f;
-        private const float fadeOutSpeed = 0.05f;
 
         private const float firstInsentity = 0.5f;
         private const float maxInsentity = 50000f;

@@ -11,6 +11,7 @@ using Exiled.API.Features.Toys;
 using Exiled.Events.EventArgs.Player;
 
 using DG.Tweening;
+using MEC;
 using Mirror;
 
 using PlayerHandlers = Exiled.Events.Handlers.Player;
@@ -20,11 +21,16 @@ namespace CandyChances.Components
     public class Spicy : Effect
     {
         protected override float Duration => 10f;
-        protected override UpdateMode UpdateMode => UpdateMode.LateUpdate;
+        protected override UpdateMode UpdateMode => UpdateMode.None;
 
         private Transform fireRoot;
+        private CoroutineHandle fireBreath;
 
         private const float TweenTime = 0.25f;
+        private const float TickInterval = 1;
+        private const float FireRangeSqr = 25;
+        private const float BurnedDuration = 60;
+
         private readonly List<Primitive> spheres = [];
         private readonly List<Sequence> sequences = [];
         private static Color startColor = new(5.34f, 2.3f, 0);
@@ -42,11 +48,12 @@ namespace CandyChances.Components
             new(0.593f,-0.543f, 3.722f,1f,2f,2.4208f,       5.34f,0.0443f,0f)
         ];
 
-
         public override void OnEffectEnabled()
         {
             SpawnSpheres();
             CreateDOTweenSequence();
+
+            fireBreath = Timing.RunCoroutine(FireBreath().CancelWith(gameObject));
         }
 
         public override void OnEffectDisabled()
@@ -54,6 +61,8 @@ namespace CandyChances.Components
             KillSequence();
             DestroySpheres();
             alreadyDamagedEntities.Clear();
+
+            Timing.KillCoroutines(fireBreath);
         }
 
         protected override void SubscribeEvents()
@@ -69,6 +78,7 @@ namespace CandyChances.Components
             PlayerHandlers.ChangingItem -= OnChangingItem;
             PlayerHandlers.SearchingPickup -= OnSearchingPickup;
         }
+
         private void OnSearchingPickup(SearchingPickupEventArgs ev)
         {
             if (ev.Player != Player)
@@ -149,68 +159,71 @@ namespace CandyChances.Components
             spheres.Clear();
         }
 
-        protected override void OnEffectUpdate()
+        private IEnumerator<float> FireBreath()
         {
-            Vector3 pos = Player.Position;
-            Vector3 forward = Player.CameraTransform.forward;
-
-            bool hitmarker = false;
-
-            foreach (Player target in Player.List)
+            while (enabled)
             {
-                if (target == Player)
-                    continue;
+                Vector3 pos = Player.Position;
+                Vector3 forward = Player.CameraTransform.forward;
+                bool hit = false;
 
-                Vector3 delta = target.Position - pos;
-                float sqrDist = delta.sqrMagnitude;
+                foreach (Player target in Player.List)
+                {
+                    if (target == Player)
+                        continue;
 
-                if (sqrDist > 25f)
-                    continue;
+                    Vector3 delta = target.Position - pos;
+                    float sqr = delta.sqrMagnitude;
 
-                if (!HitboxIdentity.IsDamageable(Player.ReferenceHub, target.ReferenceHub))
-                    continue;
+                    if (sqr > FireRangeSqr)
+                        continue;
 
-                float dist = Mathf.Sqrt(sqrDist);
-                Vector3 dir = delta / dist;
+                    if (!HitboxIdentity.IsDamageable(Player.ReferenceHub, target.ReferenceHub))
+                        continue;
 
-                bool omniHit = dist < 0.7f;
+                    float dist = Mathf.Sqrt(sqr);
+                    Vector3 dir = delta / dist;
+                    bool omni = dist < CustomPlayerEffects.Spicy. OmnidirectionalRange;
+                    float dot = Vector3.Dot(dir, forward);
+                    bool cone = dot >= CustomPlayerEffects.Spicy.EnemyDotProductThreshold;
 
-                float dot = Vector3.Dot(dir, forward);
-                bool coneHit = dot >= 0.75f;
+                    if (!omni && !cone)
+                        continue;
 
-                if (!omniHit && !coneHit)
-                    continue;
+                    if (Physics.Raycast(pos, dir, dist, PlayerRolesUtils.AttackMask))
+                        continue;
 
-                if (Physics.Raycast(pos, dir, dist, PlayerRolesUtils.AttackMask))
-                    continue;
+                    if (!alreadyDamagedEntities.Add(target.NetId))
+                        continue;
 
-                if (!alreadyDamagedEntities.Add(target.NetId))
-                    continue;
+                    target.EnableEffect(EffectType.Burned, BurnedDuration);
 
-                target.EnableEffect(EffectType.Burned, 60f);
+                    float dmg = CustomPlayerEffects.Spicy.TickDamage;
+                    float hume = target.HumeShield;
 
-                float damage = 15f;
-                float hume = target.HumeShield;
-                damage = (damage * 3f < hume) ? damage * 3f : damage + hume / 3f;
+                    dmg = (dmg * 3f < hume) ? dmg * 3f : dmg + hume / 3f;
 
-                ExplosionDamageHandler handler = new(Player.Footprint, Vector3.zero, damage, 100, ExplosionType.Custom);
-                target.Hurt(handler);
+                    ExplosionDamageHandler handler = new(Player.Footprint, Vector3.zero, dmg, 100, ExplosionType.Custom);
 
-                if (Hitmarker.CheckHitmarkerPerms(handler, target.ReferenceHub))
-                    hitmarker = true;
+                    target.Hurt(handler);
+
+                    if (Hitmarker.CheckHitmarkerPerms(handler, target.ReferenceHub))
+                        hit = true;
+                }
+
+                if (hit)
+                    Player.ShowHitMarker();
+
+                alreadyDamagedEntities.Clear();
+                yield return Timing.WaitForSeconds(TickInterval);
             }
-
-            if (hitmarker)
-                Player.ShowHitMarker();
-
-            alreadyDamagedEntities.Clear();
         }
 
         private struct FireSphereTarget(float px, float py, float pz, float sx, float sy, float sz, float r, float g, float b)
         {
             public Vector3 Pos = new(px, py, pz);
             public Vector3 Scale = new(sx, sy, sz);
-            public Color Color = new(r, g, b, 0.25f);
+            public Color Color = new(r, g, b, 0.1f);
         }
 
     }

@@ -1,9 +1,7 @@
-﻿using Exiled.API.Features;
+﻿using InventorySystem.Items.Usables.Scp330;
+
+using Exiled.API.Features;
 using Exiled.API.Features.Roles;
-
-using InventorySystem.Items.Usables.Scp330;
-
-using PlayerRoles.FirstPersonControl;
 
 using UnityEngine;
 
@@ -14,45 +12,42 @@ namespace CandyChances.Components
         protected override float Duration => HauntedCandyYellow.SugarRushDuration;
         protected override UpdateMode UpdateMode => UpdateMode.FixedUpdate;
 
-        private FpcMotor motor;
-        private float sprintSpeed;
-
-        private const float SpeedBoost = 2.2f;
+        private float sprintMult; 
+        private const float SpeedBoost = 2.2f; 
+        private static readonly RaycastHit[] _hits = new RaycastHit[3];
+        private static readonly int WorldMask =LayerMask.GetMask("Default");
 
         public override void OnEffectEnabled()
         {
-            if (motor != null)
-                return;
-
             if (Player.Role is not FpcRole fpc)
                 return;
 
-            sprintSpeed = fpc.SprintingSpeed;
-            motor = fpc.FirstPersonController.FpcModule.Motor;
+            sprintMult = fpc.SprintingSpeed * SpeedBoost;
         }
 
-        public override void OnEffectDisabled() 
-        { 
-            motor = null;
-        }
-
+        public override void OnEffectDisabled() { }
         protected override void OnEffectUpdate()
         {
-            if (motor == null)
-                return;
+            Vector3 pos = Player.Position;
+            Vector3 forward = Player.Transform.forward;
 
-            Vector3 pos = motor.Position;
-            Vector3 dir = motor.CachedTransform.forward;
+            float distance = sprintMult * Time.deltaTime;
+            const float playerRadius = 0.3f;
 
-            dir.y = 0f;
-            dir.Normalize();
-
-            Vector3 target = pos + dir * (sprintSpeed * SpeedBoost) * Time.deltaTime;
-            
-            if ((target - pos).sqrMagnitude > 0.05f)
+            if (Physics.SphereCast(pos,playerRadius, forward, out RaycastHit hit, distance + 0.01f, WorldMask, QueryTriggerInteraction.Ignore))
             {
-                Player.Position = target; 
+                if (hit.distance > 0)
+                {
+                    float safeDistance = hit.distance - 0.01f;
+                    if (safeDistance > 0)
+                    {
+                        Player.Position = pos + forward * safeDistance;
+                    }
+                }
+                return;
             }
+
+            Player.Position = pos + forward * distance;
         }
     }
 }

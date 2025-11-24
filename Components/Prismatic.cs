@@ -1,11 +1,19 @@
 ﻿using System.Collections.Generic;
 
 using Exiled.API.Enums;
+using Exiled.API.Extensions;
+using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
 
 using Hazards;
 
 using MEC;
+
+using Mirror;
+
+using PlayerRoles.PlayableScps.Scp939;
+
+using PlayerStatsSystem;
 
 using UnityEngine;
 
@@ -29,7 +37,7 @@ namespace CandyChances.Components
         private float lastSaveTime;
         private CoroutineHandle regenHandle;
 
-        public object OriginCloud { get; set; }
+        public PrismaticCloud OriginCloud { get; set; }
 
         private bool IsDamageImmune => lastSaveTime + DamageImmunityDuration >= Time.timeSinceLevelLoad;
 
@@ -71,15 +79,12 @@ namespace CandyChances.Components
             if (ev.Player != Player)
                 return;
 
-            if (IsDamageImmune)
-            {
-                ev.Amount = 0;
-                return;
-            }
+            float baseDamage = ev.Amount;
 
-            if (IsTeslaImmune && ev.DamageHandler.Type == DamageType.Tesla)
+            if (IsDamageImmune || (IsTeslaImmune && ev.DamageHandler.Type == DamageType.Tesla))
             {
                 ev.Amount = 0;
+                ev.IsAllowed = false;
                 return;
             }
 
@@ -89,11 +94,23 @@ namespace CandyChances.Components
                 return;
             }
 
+            if ( ev.DamageHandler.Type is DamageType.Scp207 or DamageType.PocketDimension)
+            {
+                ev.Amount *= ReducedDamageMultiplier;
+                return;
+            }
+
+            if (ev.DamageHandler.Base is Scp939DamageHandler dmghdl939 && dmghdl939.Scp939DamageType == Scp939DamageType.LungeTarget)
+            {
+                ev.Amount *= ReducedDamageMultiplier;
+                return;
+            }
+
             float hp = Player.Health;
             float ahp = Player.ArtificialHealth;
             float total = hp + ahp;
 
-            if (hp > ev.Amount || total > ev.Amount)
+            if (hp > baseDamage || total > baseDamage)
             {
                 ev.Amount *= ReducedDamageMultiplier;
                 return;
@@ -101,13 +118,11 @@ namespace CandyChances.Components
 
             enabled = false;
 
-            if (OriginCloud is PrismaticCloud cloud && cloud.IgnoredTargets != null)
-                cloud.IgnoredTargets.Add(Player.ReferenceHub);
+            OriginCloud?.IgnoredTargets.Add(Player.ReferenceHub);
 
             lastSaveTime = Time.timeSinceLevelLoad;
 
-            ev.Amount = Mathf.Max(total - DeathSaveHealth, 0f);
-            Player.Health = DeathSaveHealth;
+            ev.Amount = (total - DeathSaveHealth) / baseDamage; 
         }
     }
 }
