@@ -12,8 +12,9 @@ namespace CandyChances.Components
         protected override float Duration => HauntedCandyYellow.SugarRushDuration;
         protected override UpdateMode UpdateMode => UpdateMode.FixedUpdate;
 
-        private float sprintMult; 
-        private const float SpeedBoost = 2.2f; 
+        private float sprintMult;
+        private const float SpeedBoost = 2.2f;
+        private const float PlayerRadius = 0.3f;
         private static readonly int WorldMask =LayerMask.GetMask("Default");
 
         public override void OnEffectEnabled()
@@ -31,9 +32,9 @@ namespace CandyChances.Components
             Vector3 forward = Player.Transform.forward;
 
             float distance = sprintMult * Time.deltaTime;
-            const float playerRadius = 0.3f;
+            
 
-            if (Physics.SphereCast(pos,playerRadius, forward, out RaycastHit hit, distance + 0.01f, WorldMask, QueryTriggerInteraction.Ignore))
+            if (Physics.SphereCast(pos, PlayerRadius, forward, out RaycastHit hit, distance + 0.01f, WorldMask, QueryTriggerInteraction.Ignore))
             {
                 if (hit.distance > 0)
                 {
